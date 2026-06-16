@@ -268,22 +268,204 @@ footer{
     color:#aaa;
 }
 
-/* RESPONSIVE */
+@media (max-width: 992px){
 
-@media(max-width:900px){
+.hero{
+    padding:20px;
+}
+
+.window{
+    padding:20px;
+}
 
 .profile{
     grid-template-columns:1fr;
-}
-
-.title{
-    font-size:18px;
+    text-align:center;
+    gap:30px;
 }
 
 .pixel-avatar{
-    width:200px;
-    height:200px;
+    width:220px;
+    height:220px;
 }
+
+.title{
+    font-size:22px;
+}
+
+.subtitle{
+    font-size:10px;
+}
+
+.bio{
+    font-size:10px;
+    line-height:2;
+}
+
+.btns{
+    justify-content:center;
+}
+
+.stats{
+    grid-template-columns:1fr;
+}
+
+.skill-grid{
+    grid-template-columns:repeat(2,1fr);
+}
+
+}
+
+/* Mobile */
+@media (max-width: 768px){
+
+.hero{
+    padding:15px;
+}
+
+.window{
+    padding:15px;
+    border-width:4px;
+}
+
+.top-bar{
+    flex-direction:column;
+    gap:10px;
+    text-align:center;
+    font-size:9px;
+}
+
+.pixel-avatar{
+    width:180px;
+    height:180px;
+    border-width:4px;
+}
+
+.title{
+    font-size:16px;
+    line-height:1.6;
+    word-break:break-word;
+}
+
+.subtitle{
+    font-size:8px;
+    line-height:1.8;
+}
+
+.bio{
+    font-size:8px;
+    line-height:2;
+    text-align:left;
+}
+
+.btns{
+    flex-direction:column;
+    align-items:center;
+    width:100%;
+}
+
+.pixel-btn{
+    width:100%;
+    max-width:300px;
+    text-align:center;
+    font-size:10px;
+}
+
+.card h3{
+    font-size:10px;
+}
+
+.card p{
+    font-size:8px;
+}
+
+.section-title{
+    font-size:14px;
+}
+
+.skill-grid{
+    grid-template-columns:1fr;
+}
+
+.skill{
+    padding:20px;
+}
+
+.skill-icon{
+    font-size:32px;
+}
+
+.skill-name{
+    font-size:9px;
+}
+
+.skill p{
+    font-size:8px;
+    line-height:1.8;
+}
+
+.quest h2{
+    font-size:14px;
+}
+
+.quest li{
+    font-size:8px;
+    line-height:2;
+}
+
+footer{
+    font-size:8px;
+    line-height:1.8;
+}
+
+}
+
+/* Extra Small Phone */
+@media (max-width: 480px){
+
+.title{
+    font-size:14px;
+}
+
+.pixel-avatar{
+    width:150px;
+    height:150px;
+}
+
+.subtitle{
+    font-size:7px;
+}
+
+.bio{
+    font-size:7px;
+}
+
+.pixel-btn{
+    font-size:8px;
+    padding:12px;
+}
+
+.section-title{
+    font-size:12px;
+}
+
+html,body{
+width:100%;
+overflow-x:hidden;
+}
+
+img{
+max-width:100%;
+height:auto;
+display:block;
+}
+
+.container{
+width:100%;
+max-width:1200px;
+margin:auto;
+}
+
 
 }
 
