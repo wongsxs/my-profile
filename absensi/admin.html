@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <base target="_top">
+    <title>Admin Panel - Absensi GAMKI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0f2b5c; --primary-light: #1e40af;
+            --gold: #d97706; --gold-light: #fbbf24;
+            --danger: #ef4444; --success: #10b981;
+            --bg: #f1f5f9; --card: rgba(255,255,255,0.97);
+            --txt: #1e293b; --txt2: #64748b; --txt3: #94a3b8;
+            --r: 12px; --rx: 20px;
+            --sh: 0 4px 20px rgba(15,43,92,0.08);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--txt); line-height: 1.6; padding: 16px 8px; }
+        .bg-fx { position: fixed; inset: 0; z-index: -1; overflow: hidden; }
+        .bg-fx span { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.35; }
+        .s1 { top: -10%; left: -10%; width: 55vw; height: 55vw; background: radial-gradient(circle, #1e40af, #0f2b5c); }
+        .s2 { bottom: -15%; right: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, #f59e0b, #d97706); }
+        .wrap { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+
+        /* HEADER */
+        .hdr { background: linear-gradient(135deg, #1a0535 0%, #3b0764 50%, #581c87 100%); border-radius: var(--rx); padding: 22px 24px; color: #fff; box-shadow: var(--sh); }
+        .hdr-top { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+        .badge-admin { display: flex; flex-direction: column; align-items: center; background: linear-gradient(145deg, #dc2626, #b91c1c); padding: 10px 13px; border-radius: var(--r); flex-shrink: 0; }
+        .badge-admin i { font-size: 22px; color: #fff; }
+        .badge-admin span { font-size: 8px; font-weight: 800; letter-spacing: 1px; color: #fff; }
+        .hdr h1 { font-size: 20px; font-weight: 700; }
+        .hdr p { font-size: 11px; color: #ddd6fe; }
+
+        /* NAV TABS (header) */
+        .nav-row { display: flex; gap: 4px; border-top: 1px solid rgba(255,255,255,0.12); padding-top: 14px; overflow-x: auto; }
+        .nav-btn { background: transparent; border: none; color: #a78bfa; padding: 8px 14px; font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; border-bottom: 3px solid transparent; white-space: nowrap; text-decoration: none; }
+        .nav-btn:hover { color: #fff; }
+        .nav-btn.active { color: #f0abfc; border-bottom-color: #f0abfc; }
+        .nav-back { color: #fca5a5 !important; }
+        .nav-back:hover { color: #fff !important; }
+
+        /* TABS */
+        .tab { display: none; } .tab.active { display: block; }
+
+        /* LOCK SCREEN */
+        .lock-wrap { max-width: 400px; margin: 40px auto; }
+        .lock-card { text-align: center; }
+        .lock-icon { width: 60px; height: 60px; border-radius: 50%; background: rgba(239,68,68,0.1); color: var(--danger); display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 14px; }
+
+        /* CARD */
+        .card { background: var(--card); border-radius: var(--rx); border: 1px solid #e2e8f0; padding: 22px; box-shadow: var(--sh); }
+        .c-hdr { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid #f1f5f9; }
+        .c-hdr.sb { justify-content: space-between; align-items: center; }
+        .c-ico { width: 38px; height: 38px; border-radius: var(--r); background: rgba(15,43,92,0.08); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+
+        /* STATUS BAR */
+        .status-bar { display: flex; justify-content: space-between; align-items: center; background: #1e293b; color: #fff; padding: 10px 16px; border-radius: var(--r); font-size: 12px; margin-bottom: 14px; }
+
+        /* FORM */
+        .inp { width: 100%; padding: 10px 14px; font-size: 13px; border: 1.5px solid #cbd5e1; border-radius: var(--r); outline: none; font-family: inherit; background: #fff; }
+        .inp:focus { border-color: var(--primary-light); }
+        .inline-form { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: var(--r); padding: 14px; margin-bottom: 14px; }
+
+        /* BUTTONS */
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 14px; font-size: 13px; font-weight: 700; border-radius: var(--r); border: none; cursor: pointer; font-family: inherit; text-decoration: none; }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-secondary { background: #e2e8f0; color: var(--txt); }
+        .btn-outline { background: transparent; border: 1.5px solid var(--primary-light); color: var(--primary-light); }
+        .btn-gold { background: var(--gold); color: #fff; }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-outline-danger { background: transparent; border: 1px solid var(--danger); color: var(--danger); }
+        .btn-success { background: var(--success); color: #fff; }
+        .btn-block { width: 100%; }
+        .btn-sm { padding: 4px 9px; font-size: 11px; }
+        .btn-lg { padding: 12px 20px; font-size: 15px; }
+
+        /* TABLE */
+        .tbl-wrap { width: 100%; overflow-x: auto; }
+        table.dt { width: 100%; border-collapse: collapse; font-size: 13px; }
+        table.dt th { background: #f8fafc; color: var(--txt2); font-weight: 700; padding: 10px 12px; border-bottom: 2px solid #e2e8f0; text-align: left; white-space: nowrap; }
+        table.dt td { padding: 10px 12px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+        .actions-cell { display: flex; gap: 4px; flex-wrap: nowrap; }
+
+        /* FILTER BAR */
+        .filter-bar { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+        .fi { flex: 1; min-width: 180px; position: relative; }
+        .fi i { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--txt3); font-size: 11px; }
+        .fi input { width: 100%; padding: 8px 12px 8px 30px; border: 1px solid #cbd5e1; border-radius: var(--r); outline: none; font-size: 13px; font-family: inherit; }
+        .fi-sel select { padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: var(--r); font-size: 13px; background: #fff; font-family: inherit; }
+
+        /* STATS CARDS */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 16px; }
+        .stat-c { background: #fff; border-radius: var(--r); padding: 14px 16px; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 12px; }
+        .si { width: 38px; height: 38px; border-radius: var(--r); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        .gold .si { background: rgba(217,119,6,0.12); color: var(--gold); }
+        .blue .si { background: rgba(15,43,92,0.12); color: var(--primary); }
+        .sky .si { background: rgba(59,130,246,0.12); color: #3b82f6; }
+        .purple .si { background: rgba(147,51,234,0.12); color: #9333ea; }
+        .green .si { background: rgba(16,185,129,0.12); color: var(--success); }
+        .sv { font-size: 22px; font-weight: 700; display: block; }
+        .sl { font-size: 11px; color: var(--txt2); }
+
+        /* MODAL */
+        .modal { position: fixed; inset: 0; z-index: 1000; display: none; align-items: center; justify-content: center; padding: 16px; }
+        .modal.active { display: flex; }
+        .modal-bd { position: absolute; inset: 0; background: rgba(0,0,0,0.75); }
+        .modal-box { position: relative; background: #fff; border-radius: var(--r); max-width: 440px; width: 100%; padding: 22px; z-index: 1; }
+
+        /* UTIL */
+        .hidden { display: none !important; }
+        .mt-2 { margin-top: 8px; }
+        .mt-3 { margin-top: 14px; }
+        .mt-4 { margin-top: 18px; }
+        .mb-3 { margin-bottom: 12px; }
+        .flex-end { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+        .empty { text-align: center; padding: 30px; color: var(--txt3); }
+        .empty i { font-size: 30px; display: block; margin-bottom: 8px; }
+
+        /* OVERLAY / TOAST */
+        .ov { position: fixed; inset: 0; background: rgba(0,0,0,0.72); display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; z-index: 2000; font-size: 14px; }
+        .spin { width: 36px; height: 36px; border: 4px solid rgba(255,255,255,0.3); border-top-color: var(--gold-light); border-radius: 50%; animation: sp 0.8s linear infinite; margin-bottom: 10px; }
+        @keyframes sp { to { transform: rotate(360deg); } }
+        .toast { position: fixed; bottom: 20px; right: 20px; background: #1e293b; color: #fff; padding: 12px 18px; border-radius: var(--r); z-index: 3000; font-size: 13px; max-width: 320px; }
+        footer { text-align: center; font-size: 11px; color: var(--txt3); margin-top: 4px; }
+    </style>
+</head>
+<body>
+<div class="bg-fx"><span class="s1"></span><span class="s2"></span></div>
+
+<div class="wrap">
+    <!-- HEADER -->
+    <header class="hdr">
+        <div class="hdr-top" onclick="gotoPortal(event)" style="cursor: pointer;">
+            <div class="badge-admin">
+                <i class="fa-solid fa-user-shield"></i>
+                <span>ADMIN</span>
+            </div>
+            <div>
+                <h1>ADMIN PANEL GAMKI</h1>
+                <p>Dashboard Pengelolaan Data &bull; Riwayat &bull; Statistik Presensi</p>
+            </div>
+        </div>
+        <nav class="nav-row" id="nav-row">
+            <a href="#" class="nav-btn nav-back" onclick="gotoPortal(event)" style="color: #cbd5e1 !important;"><i class="fa-solid fa-house"></i> Portal Utama</a>
+            <a href="#" class="nav-btn nav-back" onclick="gotoIndex(event)"><i class="fa-solid fa-arrow-left"></i> Form Publik</a>
+            <button class="nav-btn active" data-tab="t-member"><i class="fa-solid fa-users-gear"></i> Kelola Anggota</button>
+            <button class="nav-btn" data-tab="t-recap"><i class="fa-solid fa-list-check"></i> Riwayat Presensi</button>
+            <button class="nav-btn" data-tab="t-stats"><i class="fa-solid fa-chart-pie"></i> Statistik</button>
+        </nav>
+    </header>
+
+    <main>
+        <!-- ============ LOCK SCREEN ============ -->
+        <div id="lock-screen" class="lock-wrap">
+            <div class="card lock-card">
+                <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+                <h2 style="font-size:18px;">Akses Admin Panel</h2>
+                <p style="font-size:12px;color:#64748b;margin-top:6px;">Masukkan PIN Admin untuk mengelola database Google Sheets GAMKI.</p>
+                <div class="mt-3">
+                    <input type="password" id="pin-input" class="inp" placeholder="PIN Admin..." style="text-align:center;letter-spacing:4px;font-size:18px;">
+                    <button id="btn-login" class="btn btn-primary btn-block btn-lg mt-2">
+                        <i class="fa-solid fa-lock-open"></i> Masuk Admin
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ DASHBOARD ============ -->
+        <div id="dashboard" class="hidden">
+            <div class="status-bar">
+                <span><i class="fa-solid fa-database"></i>&nbsp; Terhubung ke <strong>Google Sheets Database GAMKI</strong></span>
+                <button id="btn-logout" class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-right-from-bracket"></i> Keluar</button>
+            </div>
+
+            <!-- TAB: KELOLA ANGGOTA -->
+            <section id="t-member" class="tab active">
+                <div class="card">
+                    <div class="c-hdr sb">
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <div class="c-ico"><i class="fa-solid fa-users"></i></div>
+                            <div>
+                                <h2 style="font-size:15px;">Master Data Anggota</h2>
+                                <p style="font-size:11px;color:#64748b;">Kelola nama anggota di Sheet "Data Anggota".</p>
+                            </div>
+                        </div>
+                        <button id="btn-add-member" class="btn btn-gold btn-sm"><i class="fa-solid fa-plus"></i> Tambah</button>
+                    </div>
+
+                    <!-- Inline form tambah/edit -->
+                    <div id="member-form" class="inline-form hidden">
+                        <h3 id="member-form-title" style="font-size:13px;margin-bottom:8px;">Tambah Anggota Baru</h3>
+                        <input type="hidden" id="old-name">
+                        <input type="text" id="new-name" class="inp" placeholder="Nama Lengkap Anggota &amp; Gelar">
+                        <div style="display:flex;gap:8px;margin-top:10px;">
+                            <button id="btn-save-member" class="btn btn-primary btn-sm"><i class="fa-solid fa-floppy-disk"></i> Simpan</button>
+                            <button id="btn-cancel-member" class="btn btn-secondary btn-sm">Batal</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="fi" style="max-width:100%;">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="member-search" placeholder="Cari nama anggota...">
+                        </div>
+                    </div>
+
+                    <div class="tbl-wrap">
+                        <table class="dt">
+                            <thead><tr><th>#</th><th>Nama Lengkap Anggota</th><th>Aksi</th></tr></thead>
+                            <tbody id="tbody-member"></tbody>
+                        </table>
+                        <div id="empty-member" class="empty hidden"><i class="fa-regular fa-folder-open"></i><p>Belum ada data anggota.</p></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: RIWAYAT PRESENSI -->
+            <section id="t-recap" class="tab">
+                <div class="card">
+                    <div class="c-hdr sb">
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <div class="c-ico"><i class="fa-solid fa-list-check"></i></div>
+                            <div>
+                                <h2 style="font-size:15px;">Riwayat Presensi</h2>
+                                <p style="font-size:11px;color:#64748b;">Data real-time dari Google Sheets GAMKI.</p>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:6px;">
+                            <button id="btn-export" class="btn btn-outline btn-sm"><i class="fa-solid fa-file-excel"></i> CSV</button>
+                            <button id="btn-clear-all" class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-trash-can"></i> Bersihkan Semua</button>
+                        </div>
+                    </div>
+
+                    <div class="filter-bar">
+                        <div class="fi">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="recap-search" placeholder="Cari nama / kegiatan...">
+                        </div>
+                        <div class="fi-sel">
+                            <select id="recap-keg">
+                                <option value="">Semua Kegiatan</option>
+                                <option value="Sosper">Sosper</option>
+                                <option value="Pelantikan">Pelantikan</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="tbl-wrap">
+                        <table class="dt" id="tbl-recap">
+                            <thead><tr><th>#</th><th>Foto</th><th>Nama Anggota</th><th>Tanggal</th><th>Kegiatan</th><th>Waktu Input</th><th>Aksi</th></tr></thead>
+                            <tbody id="tbody-recap"></tbody>
+                        </table>
+                        <div id="empty-recap" class="empty hidden"><i class="fa-regular fa-folder-open"></i><p>Belum ada data presensi.</p></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: STATISTIK -->
+            <section id="t-stats" class="tab">
+                <div class="stats-grid">
+                    <div class="stat-c gold"><div class="si"><i class="fa-solid fa-users"></i></div><div><span class="sv" id="s-anggota">0</span><span class="sl">Total Anggota</span></div></div>
+                    <div class="stat-c blue"><div class="si"><i class="fa-solid fa-clipboard-check"></i></div><div><span class="sv" id="s-total">0</span><span class="sl">Total Presensi</span></div></div>
+                    <div class="stat-c sky"><div class="si"><i class="fa-solid fa-users-rectangle"></i></div><div><span class="sv" id="s-sosper">0</span><span class="sl">Sosper</span></div></div>
+                    <div class="stat-c purple"><div class="si"><i class="fa-solid fa-award"></i></div><div><span class="sv" id="s-pelantikan">0</span><span class="sl">Pelantikan</span></div></div>
+                    <div class="stat-c green"><div class="si"><i class="fa-solid fa-percent"></i></div><div><span class="sv" id="s-rate">0%</span><span class="sl">Rata-rata Kehadiran</span></div></div>
+                </div>
+
+                <div class="card">
+                    <div class="c-hdr">
+                        <div class="c-ico"><i class="fa-solid fa-list-ol"></i></div>
+                        <div>
+                            <h2 style="font-size:15px;">Ringkasan Kehadiran Per Anggota</h2>
+                            <p style="font-size:11px;color:#64748b;">Diurutkan dari yang paling sering hadir.</p>
+                        </div>
+                    </div>
+                    <div class="tbl-wrap">
+                        <table class="dt">
+                            <thead><tr><th>No</th><th>Nama Anggota</th><th>Jumlah Hadir</th><th>Kegiatan Terakhir</th><th>Tanggal Terakhir</th></tr></thead>
+                            <tbody id="tbody-stats"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer><p>&copy; 2026 GAMKI &bull; Admin Panel Google Apps Script</p></footer>
+</div>
+
+<!-- Modal Edit Presensi -->
+<div id="modal-edit" class="modal">
+    <div class="modal-bd" onclick="closeModal('modal-edit')"></div>
+    <div class="modal-box">
+        <h3 style="font-size:15px;margin-bottom:12px;"><i class="fa-solid fa-pen"></i> Edit Presensi</h3>
+        <form id="edit-form">
+            <input type="hidden" id="edit-id">
+            <div style="margin-bottom:10px;">
+                <label style="font-size:12px;font-weight:700;">Nama Anggota</label>
+                <select id="edit-member" class="inp mt-2"></select>
+            </div>
+            <div style="margin-bottom:10px;">
+                <label style="font-size:12px;font-weight:700;">Tanggal Kegiatan</label>
+                <input type="date" id="edit-date" class="inp mt-2" required>
+            </div>
+            <div style="margin-bottom:10px;">
+                <label style="font-size:12px;font-weight:700;">Jenis Kegiatan</label>
+                <input type="text" id="edit-keg" class="inp mt-2" required>
+            </div>
+            <div class="flex-end">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal('modal-edit')">Batal</button>
+                <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-floppy-disk"></i> Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="ov" class="ov hidden"><div class="spin"></div><p id="ov-msg">Memuat data...</p></div>
+<div id="toast" class="toast hidden"><span id="toast-msg"></span></div>
+
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyLE5bu0R8cOxmpuJWWlozcm9Yrf-ye6CocJIMbdPydCU-3dVKvZYP51hoAsQN76kLpZA/exec';
+let members = [], records = [];
+
+document.addEventListener('DOMContentLoaded', initApp);
+
+function isGasEnvironment() {
+    return typeof google !== 'undefined' && google.script && google.script.run;
+}
+
+function callBackendAction(action, data, successHandler, errorHandler) {
+    if (isGasEnvironment()) {
+        if (action === "getMembers") {
+            google.script.run.withSuccessHandler(successHandler).withFailureHandler(errorHandler).getGAMKIMembers();
+        } else if (action === "getHistory") {
+            google.script.run.withSuccessHandler(successHandler).withFailureHandler(errorHandler).getAttendanceHistory();
+        } else if (action === "addMember") {
+            google.script.run.withSuccessHandler(successHandler).withFailureHandler(errorHandler).addMemberGAS(data.name);
+        } else if (action === "updateMember") {
+            google.script.run.withSuccessHandler(successHandler).withFailureHandler(errorHandler).updateMemberGAS(data.oldName, data.newName);
+        } else if (action === "deleteMember") {
+            google.script.run.withSuccessHandler(successHandler).withFailureHandler(errorHandler).deleteMemberGAS(data.name);
+        } else if (action === "updateRecord") {
+            google.script.run.withSuccessHandler(successHandler).withFailureHandler(errorHandler).updateAttendanceRecordGAS(data.id, data.memberName, data.eventDate, data.kegiatan);
+        } else if (action === "deleteRecord") {
+            google.script.run.withSuccessHandler(successHandler).withFailureHandler(errorHandler).deleteAttendanceRecordGAS(data.id);
+        } else if (action === "clearAll") {
+            google.script.run.withSuccessHandler(successHandler).withFailureHandler(errorHandler).clearAllAttendanceGAS();
+        } else if (action === "getWebAppUrl") {
+            google.script.run.withSuccessHandler(successHandler).withFailureHandler(errorHandler).getWebAppUrl();
+        }
+    } else {
+        if (action === "getMembers" || action === "getHistory" || action === "getWebAppUrl") {
+            fetch(`${GAS_URL}?action=${action}`)
+                .then(r => r.json())
+                .then(res => {
+                    if (res.status === 'success') {
+                        successHandler(res.data);
+                    } else {
+                        errorHandler(res.message || 'Error response from API');
+                    }
+                })
+                .catch(err => errorHandler(err));
+        } else {
+            fetch(GAS_URL, {
+                method: 'POST',
+                mode: 'cors',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: action, data: data })
+            })
+            .then(r => r.json())
+            .then(res => {
+                if (res.status === 'success') {
+                    successHandler(res);
+                } else {
+                    errorHandler(res.message || 'Error response from API');
+                }
+            })
+            .catch(err => errorHandler(err));
+        }
+    }
+}
+
+function showOv(m) { document.getElementById('ov-msg').textContent = m; document.getElementById('ov').classList.remove('hidden'); }
+function hideOv() { document.getElementById('ov').classList.add('hidden'); }
+function toast(msg, err) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    t.style.background = err ? '#ef4444' : '#10b981';
+    t.classList.remove('hidden');
+    clearTimeout(t._t); t._t = setTimeout(() => t.classList.add('hidden'), 3500);
+}
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+/* ===== INIT ===== */
+function initApp() {
+    // Login
+    const pinInp = document.getElementById('pin-input');
+    document.getElementById('btn-login').addEventListener('click', () => {
+        if (['1962','admin'].includes(pinInp.value.trim())) {
+            document.getElementById('lock-screen').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            loadAll();
+        } else { toast('PIN Admin Salah!', true); pinInp.value = ''; pinInp.focus(); }
+    });
+    pinInp.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('btn-login').click(); });
+
+    // Logout
+    document.getElementById('btn-logout').addEventListener('click', () => {
+        document.getElementById('dashboard').classList.add('hidden');
+        document.getElementById('lock-screen').classList.remove('hidden');
+        document.getElementById('pin-input').value = '';
+    });
+
+    // Tabs
+    document.querySelectorAll('.nav-btn[data-tab]').forEach(b => {
+        b.addEventListener('click', () => {
+            const id = b.getAttribute('data-tab');
+            document.querySelectorAll('.nav-btn[data-tab]').forEach(x => x.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+            b.classList.add('active');
+            document.getElementById(id).classList.add('active');
+            if (id === 't-stats') renderStats();
+        });
+    });
+
+    // Member CRUD
+    document.getElementById('btn-add-member').addEventListener('click', () => {
+        document.getElementById('member-form-title').textContent = 'Tambah Anggota Baru';
+        document.getElementById('old-name').value = '';
+        document.getElementById('new-name').value = '';
+        document.getElementById('member-form').classList.remove('hidden');
+    });
+    document.getElementById('btn-cancel-member').addEventListener('click', () => {
+        document.getElementById('member-form').classList.add('hidden');
+    });
+    document.getElementById('btn-save-member').addEventListener('click', saveMember);
+    document.getElementById('member-search').addEventListener('input', renderMembers);
+
+    // Recap filters
+    document.getElementById('recap-search').addEventListener('input', renderRecap);
+    document.getElementById('recap-keg').addEventListener('change', renderRecap);
+    document.getElementById('btn-export').addEventListener('click', exportCSV);
+    document.getElementById('btn-clear-all').addEventListener('click', () => {
+        if (confirm('Bersihkan SELURUH data presensi di Google Sheets? Aksi ini tidak bisa dibatalkan!')) {
+            showOv('Membersihkan data...');
+            callBackendAction("clearAll", null,
+                r => { hideOv(); toast(r.message); records = []; renderRecap(); renderStats(); },
+                e => { hideOv(); toast(e.toString(), true); }
+            );
+        }
+    });
+
+    // Edit form
+    document.getElementById('edit-form').addEventListener('submit', e => {
+        e.preventDefault();
+        const id = document.getElementById('edit-id').value;
+        const memberName = document.getElementById('edit-member').value;
+        const eventDate = document.getElementById('edit-date').value;
+        const kegiatan = document.getElementById('edit-keg').value.trim();
+        showOv('Menyimpan perubahan...');
+        callBackendAction("updateRecord", { id, memberName, eventDate, kegiatan },
+            r => { hideOv(); toast(r.message); closeModal('modal-edit'); loadAll(); },
+            e => { hideOv(); toast(e.toString(), true); }
+        );
+    });
+}
+
+/* ===== LOAD DATA ===== */
+function loadAll() {
+    showOv('Mengambil data dari Google Sheets...');
+    callBackendAction("getMembers", null,
+        m => {
+            members = m || [];
+            renderMembers();
+            callBackendAction("getHistory", null,
+                r => {
+                    records = r || [];
+                    hideOv();
+                    renderRecap();
+                    renderStats();
+                },
+                e => { hideOv(); toast(e.toString(), true); }
+            );
+        },
+        e => { hideOv(); toast(e.toString(), true); }
+    );
+}
+
+/* ===== MEMBER TABLE ===== */
+function renderMembers() {
+    const q = (document.getElementById('member-search').value || '').toLowerCase();
+    const tbody = document.getElementById('tbody-member');
+    tbody.innerHTML = '';
+    const filtered = members.filter(n => n.toLowerCase().includes(q));
+    document.getElementById('empty-member').classList.toggle('hidden', filtered.length > 0);
+    filtered.forEach((name, i) => {
+        const tr = document.createElement('tr');
+        const safeName = name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        tr.innerHTML = `<td>${i+1}</td><td><strong>${name}</strong></td>
+            <td><div class="actions-cell">
+                <button class="btn btn-primary btn-sm" onclick="editMember('${safeName}')"><i class="fa-solid fa-pen"></i></button>
+                <button class="btn btn-outline-danger btn-sm" onclick="deleteMember('${safeName}')"><i class="fa-solid fa-trash"></i></button>
+            </div></td>`;
+        tbody.appendChild(tr);
+    });
+}
+
+function editMember(name) {
+    document.getElementById('member-form-title').textContent = 'Edit Nama Anggota';
+    document.getElementById('old-name').value = name;
+    document.getElementById('new-name').value = name;
+    document.getElementById('member-form').classList.remove('hidden');
+    document.getElementById('new-name').focus();
+}
+
+function deleteMember(name) {
+    if (!confirm(`Hapus "${name}" dari database anggota?`)) return;
+    showOv('Menghapus anggota...');
+    callBackendAction("deleteMember", { name },
+        r => { hideOv(); toast(r.message); loadAll(); },
+        e => { hideOv(); toast(e.toString(), true); }
+    );
+}
+
+function saveMember() {
+    const oldName = document.getElementById('old-name').value;
+    const newName = document.getElementById('new-name').value.trim();
+    if (!newName) { toast('Nama tidak boleh kosong!', true); return; }
+    showOv('Menyimpan...');
+    if (oldName) {
+        callBackendAction("updateMember", { oldName, newName },
+            r => { hideOv(); toast(r.message); document.getElementById('member-form').classList.add('hidden'); loadAll(); },
+            e => { hideOv(); toast(e.toString(), true); }
+        );
+    } else {
+        callBackendAction("addMember", { name: newName },
+            r => { hideOv(); toast(r.message); document.getElementById('member-form').classList.add('hidden'); loadAll(); },
+            e => { hideOv(); toast(e.toString(), true); }
+        );
+    }
+}
+
+/* ===== RECAP TABLE ===== */
+function renderRecap() {
+    const q = (document.getElementById('recap-search').value || '').toLowerCase();
+    const kf = document.getElementById('recap-keg').value;
+    const tbody = document.getElementById('tbody-recap');
+    tbody.innerHTML = '';
+
+    const filtered = records.filter(r => {
+        const mq = r.memberName.toLowerCase().includes(q) || r.kegiatan.toLowerCase().includes(q);
+        const mk = !kf || r.kegiatan === kf || (kf === 'Lainnya' && r.kegiatan !== 'Sosper' && r.kegiatan !== 'Pelantikan');
+        return mq && mk;
+    });
+
+    document.getElementById('empty-recap').classList.toggle('hidden', filtered.length > 0);
+    document.getElementById('tbl-recap').style.display = filtered.length ? 'table' : 'none';
+
+    filtered.forEach((r, i) => {
+        const tr = document.createElement('tr');
+        const link = (r.photoUrl && r.photoUrl.startsWith('http'))
+            ? `<a href="${r.photoUrl}" target="_blank" class="btn btn-outline btn-sm"><i class="fa-solid fa-image"></i></a>` : '-';
+        const safeId = r.id.replace(/'/g, "\\'");
+        tr.innerHTML = `<td>${i+1}</td><td>${link}</td><td><strong>${r.memberName}</strong></td>
+            <td>${r.eventDate}</td><td>${r.kegiatan}</td>
+            <td style="color:#94a3b8;font-size:11px;">${r.timestamp}</td>
+            <td><div class="actions-cell">
+                <button class="btn btn-primary btn-sm" onclick="openEditModal('${safeId}')"><i class="fa-solid fa-pen"></i></button>
+                <button class="btn btn-outline-danger btn-sm" onclick="deleteRecord('${safeId}')"><i class="fa-solid fa-trash"></i></button>
+            </div></td>`;
+        tbody.appendChild(tr);
+    });
+}
+
+function openEditModal(id) {
+    const r = records.find(x => x.id === id);
+    if (!r) return;
+    document.getElementById('edit-id').value = r.id;
+    document.getElementById('edit-date').value = r.eventDate;
+    document.getElementById('edit-keg').value = r.kegiatan;
+    const sel = document.getElementById('edit-member');
+    sel.innerHTML = '';
+    members.forEach(m => {
+        const o = document.createElement('option');
+        o.value = m; o.textContent = m;
+        if (m === r.memberName) o.selected = true;
+        sel.appendChild(o);
+    });
+    document.getElementById('modal-edit').classList.add('active');
+}
+
+function deleteRecord(id) {
+    if (!confirm('Hapus baris presensi ini dari Google Sheets?')) return;
+    showOv('Menghapus...');
+    callBackendAction("deleteRecord", { id },
+        r => { hideOv(); toast(r.message); loadAll(); },
+        e => { hideOv(); toast(e.toString(), true); }
+    );
+}
+
+function exportCSV() {
+    const q = (document.getElementById('recap-search').value || '').toLowerCase();
+    const kf = document.getElementById('recap-keg').value;
+    const filtered = records.filter(r => {
+        const mq = r.memberName.toLowerCase().includes(q) || r.kegiatan.toLowerCase().includes(q);
+        const mk = !kf || r.kegiatan === kf || (kf === 'Lainnya' && r.kegiatan !== 'Sosper' && r.kegiatan !== 'Pelantikan');
+        return mq && mk;
+    });
+    const rows = [['No','Nama Anggota','Tanggal','Kegiatan','Waktu Input','Link Foto'], ...filtered.map((r,i) => [i+1, r.memberName, r.eventDate, r.kegiatan, r.timestamp, r.photoUrl || ''])];
+    const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+    const a = document.createElement('a');
+    a.href = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csv);
+    a.download = 'Rekap_Presensi_GAMKI.csv';
+    a.click();
+}
+
+/* ===== STATISTICS ===== */
+function renderStats() {
+    const total = records.length;
+    const sosper = records.filter(r => r.kegiatan === 'Sosper').length;
+    const pelantikan = records.filter(r => r.kegiatan === 'Pelantikan').length;
+    const rate = members.length > 0 ? Math.round((total / members.length) * 100) / 100 : 0;
+
+    document.getElementById('s-anggota').textContent = members.length;
+    document.getElementById('s-total').textContent = total;
+    document.getElementById('s-sosper').textContent = sosper;
+    document.getElementById('s-pelantikan').textContent = pelantikan;
+    document.getElementById('s-rate').textContent = rate + 'x';
+
+    const tbody = document.getElementById('tbody-stats');
+    tbody.innerHTML = '';
+    const sum = members.map(name => {
+        const recs = records.filter(r => r.memberName === name);
+        const last = recs.length ? recs[0] : null;
+        return { name, count: recs.length, keg: last ? last.kegiatan : '-', tgl: last ? last.eventDate : '-' };
+    }).sort((a,b) => b.count - a.count);
+
+    sum.forEach((s, i) => {
+        const tr = document.createElement('tr');
+        const badge = s.count > 0 ? `<strong style="color:#10b981;">${s.count}</strong>` : `<span style="color:#94a3b8;">0</span>`;
+        tr.innerHTML = `<td>${i+1}</td><td><strong>${s.name}</strong></td><td>${badge} kali</td><td style="color:#64748b;">${s.keg}</td><td style="color:#64748b;font-size:12px;">${s.tgl}</td>`;
+        tbody.appendChild(tr);
+    });
+}
+
+/* ===== NAVIGATION ===== */
+function gotoIndex(e) {
+    if (e) e.preventDefault();
+    showOv('Kembali ke Form Presensi...');
+    
+    const navigate = url => {
+        hideOv();
+        if (isGasEnvironment()) {
+            window.top.location.href = url;
+        } else {
+            window.location.href = 'index.html';
+        }
+    };
+
+    callBackendAction("getWebAppUrl", null,
+        url => navigate(url),
+        () => {
+            if (!isGasEnvironment()) {
+                navigate('');
+            } else {
+                hideOv();
+                toast('Gagal navigasi', true);
+            }
+        }
+    );
+}
+function gotoPortal(e) {
+    if (e) e.preventDefault();
+    if (isGasEnvironment()) {
+        showOv('Membuka Portal...');
+        callBackendAction("getWebAppUrl", null,
+            url => { window.top.location.href = url; },
+            () => { hideOv(); toast('Gagal navigasi', true); }
+        );
+    } else {
+        window.location.href = '../index.html';
+    }
+}
+</script>
+</body>
+</html>
