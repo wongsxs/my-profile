@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pendaftaran UMKM GAMKI SUMUT 2026</title>
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/logo-gamki.png">
+    
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -218,6 +221,11 @@
             <div class="container py-5">
                 <div class="row justify-content-center">
                     <div class="col-lg-8">
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="navigate('landing')">
+                                <i class="fas fa-arrow-left me-1"></i> Kembali ke Beranda
+                            </button>
+                        </div>
                         <div class="card shadow-sm border-0 rounded-3">
                             <div class="card-header bg-white border-0 pt-4 pb-0 text-center">
                                 <img src="assets/logo-gamki.png" alt="Logo GAMKI" style="height: 55px; width: auto;" class="mb-2">
@@ -230,20 +238,21 @@
                                     <div class="row g-3 mb-4">
                                         <div class="col-md-6">
                                             <label class="form-label">Nama UMKM <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" name="nama_umkm" required>
+                                            <input type="text" class="form-control" name="nama_umkm" placeholder="Contoh: Toko Kopi GAMKI" required>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Bidang Usaha <span class="text-danger">*</span></label>
                                             <select class="form-select" name="bidang_usaha" required>
-                                                <option value="">Pilih Bidang...</option>
-                                                <option value="Kuliner">FOOD</option>
-                                                <option value="Fashion">BEVERAGE</option>
-                                                <option value="Kriya">EKRAF (Non F&B)</option>
+                                                <option value="">Pilih Bidang Usaha...</option>
+                                                <option value="Kuliner">Kuliner (Food & Beverage)</option>
+                                                <option value="Fashion">Fashion / Pakaian</option>
+                                                <option value="Kriya">Kriya / Ekraf (Craft & Creative)</option>
+                                                <option value="Jasa">Jasa & Lainnya</option>
                                             </select>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Nama Produk Utama <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" name="nama_produk" required>
+                                            <input type="text" class="form-control" name="nama_produk" placeholder="Contoh: Kopi Bubuk Arabika" required>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Legalitas Usaha Badan</label>
@@ -257,7 +266,7 @@
                                         </div>
                                         <div class="col-12">
                                             <label class="form-label">Alamat Usaha <span class="text-danger">*</span></label>
-                                            <textarea class="form-control" name="alamat" rows="2" required></textarea>
+                                            <textarea class="form-control" name="alamat" rows="2" placeholder="Alamat lengkap lokasi usaha" required></textarea>
                                         </div>
                                     </div>
 
@@ -277,7 +286,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Alamat Email Aktif <span class="text-danger">*</span></label>
-                                            <input type="email" class="form-control" name="email" required>
+                                            <input type="email" class="form-control" name="email" placeholder="Contoh: nama@gmail.com" required>
                                         </div>
                                     </div>
 
@@ -354,6 +363,12 @@
                                         <input type="file" class="form-control" id="foto_produk_file" accept="image/jpeg, image/png, image/jpg" required>
                                         <small class="text-muted">Akan digunakan untuk keperluan promosi dan verifikasi.</small>
                                         <input type="hidden" name="foto_produk_base64" id="foto_produk_base64">
+                                        
+                                        <!-- Live Preview Foto -->
+                                        <div id="foto_preview_container" class="mt-3 text-center d-none">
+                                            <img id="foto_preview_img" src="" alt="Preview Foto Produk" class="img-thumbnail shadow-sm" style="max-height: 180px; object-fit: cover;">
+                                            <p class="text-success small mt-1 mb-0"><i class="fas fa-check-circle me-1"></i>Foto berhasil dipilih</p>
+                                        </div>
                                     </div>
 
                                     <div class="d-grid mt-4">
@@ -637,26 +652,37 @@
             });
         }
 
-        // Mengonversi File Gambar menjadi Base64 sebelum dikirim
+        // Mengonversi File Gambar menjadi Base64 & Menampilkan Live Preview
         function initImageConverter() {
             const fileInput = document.getElementById('foto_produk_file');
             const hiddenInput = document.getElementById('foto_produk_base64');
+            const previewContainer = document.getElementById('foto_preview_container');
+            const previewImg = document.getElementById('foto_preview_img');
 
             fileInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
-                if (!file) return;
+                if (!file) {
+                    if (previewContainer) previewContainer.classList.add('d-none');
+                    hiddenInput.value = '';
+                    return;
+                }
 
                 // Validasi ukuran (Maks 2MB)
                 if (file.size > 2 * 1024 * 1024) {
                     Swal.fire('File Terlalu Besar', 'Ukuran foto maksimal 2MB.', 'error');
                     this.value = ''; // Reset
                     hiddenInput.value = '';
+                    if (previewContainer) previewContainer.classList.add('d-none');
                     return;
                 }
 
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     hiddenInput.value = event.target.result;
+                    if (previewImg && previewContainer) {
+                        previewImg.src = event.target.result;
+                        previewContainer.classList.remove('d-none');
+                    }
                 };
                 reader.readAsDataURL(file);
             });
@@ -727,6 +753,8 @@
                     confirmButtonText: 'Tutup'
                 }).then(() => {
                     form.reset();
+                    const prevContainer = document.getElementById('foto_preview_container');
+                    if (prevContainer) prevContainer.classList.add('d-none');
                     navigate('landing');
                 });
             } catch (err) {
