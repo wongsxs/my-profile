@@ -588,17 +588,13 @@
                                     <option value="tutup">Tutup Pendaftaran</option>
                                 </select>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <label class="form-label fw-semibold">Nomor WhatsApp Panitia</label>
-                                <input type="tel" class="form-control" id="setting_wa_panitia" placeholder="Contoh: 081234567890">
+                                <input type="text" class="form-control" id="setting_wa_panitia" placeholder="0822-7239-4818 / 0881-0102-83260">
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-5">
                                 <label class="form-label fw-semibold">Lokasi Kegiatan</label>
-                                <input type="text" class="form-control" id="setting_lokasi_kegiatan" placeholder="Contoh: Kota Medan, SUMUT">
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label fw-semibold">Status Biaya/Sertifikat</label>
-                                <input type="text" class="form-control" id="setting_status_biaya" placeholder="Contoh: Gratis & Bersertifikat">
+                                <input type="text" class="form-control" id="setting_lokasi_kegiatan" placeholder="Lt. 10 Kantor Bank Sumut, Jl. Imam Bonjol, Medan">
                             </div>
                             <div class="col-12 text-end mt-3">
                                 <button type="submit" class="btn btn-primary rounded-pill px-4">
@@ -1572,9 +1568,9 @@
 
         function populateSettingsUI(settings) {
             if (document.getElementById('setting_status_pendaftaran')) document.getElementById('setting_status_pendaftaran').value = settings.status || 'buka';
-            if (document.getElementById('setting_wa_panitia')) document.getElementById('setting_wa_panitia').value = settings.wa || '';
-            if (document.getElementById('setting_lokasi_kegiatan')) document.getElementById('setting_lokasi_kegiatan').value = settings.lokasi || '';
-            if (document.getElementById('setting_status_biaya')) document.getElementById('setting_status_biaya').value = settings.biaya || '';
+            if (document.getElementById('setting_wa_panitia')) document.getElementById('setting_wa_panitia').value = (settings.wa && !settings.wa.includes('6281234567890')) ? settings.wa : '0822-7239-4818 / 0881-0102-83260';
+            if (document.getElementById('setting_lokasi_kegiatan')) document.getElementById('setting_lokasi_kegiatan').value = (settings.lokasi && !settings.lokasi.includes('Kota Medan, SUMUT')) ? settings.lokasi : 'Lt. 10 Kantor Bank Sumut, Jl. Imam Bonjol, Medan';
+            if (document.getElementById('setting_status_biaya')) document.getElementById('setting_status_biaya').value = '';
         }
 
         function applySettings(settings) {
