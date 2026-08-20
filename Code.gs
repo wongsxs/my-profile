@@ -80,6 +80,17 @@ function setupSpreadsheet() {
     sheetPendaftaran.setFrozenRows(1);
   }
   
+  // Format Kolom Angka sebagai Plain Text Otomatis di Google Sheets
+  try {
+    sheetPendaftaran.getRange("J:J").setNumberFormat("@"); // No HP
+    sheetPendaftaran.getRange("M:M").setNumberFormat("@"); // Nomor NIB
+    sheetPendaftaran.getRange("O:O").setNumberFormat("@"); // Nomor NPWP
+    sheetPendaftaran.getRange("Q:Q").setNumberFormat("@"); // Nomor PIRT
+    sheetPendaftaran.getRange("S:S").setNumberFormat("@"); // Nomor Merk
+    sheetPendaftaran.getRange("U:U").setNumberFormat("@"); // Nomor Halal
+    fixExistingNumbers(sheetPendaftaran);
+  } catch(e) {}
+  
   // Tab 2: Peserta
   var sheetPeserta = ss.getSheetByName("Peserta");
   if (!sheetPeserta) {
@@ -88,6 +99,9 @@ function setupSpreadsheet() {
     sheetPeserta.getRange(1, 1, 1, headersPeserta[0].length)
       .setValues(headersPeserta).setFontWeight("bold").setBackground("#d97706").setFontColor("#ffffff");
     sheetPeserta.setFrozenRows(1);
+  }
+  if (sheetPeserta) {
+    try { sheetPeserta.getRange("E:E").setNumberFormat("@"); } catch(e) {}
   }
   
   // Tab 3: Registrasi (Hari H)
@@ -108,6 +122,26 @@ function setupSpreadsheet() {
     sheetAdmin.getRange(1, 1, 1, 3).setValues(headersAdmin).setFontWeight("bold").setBackground("#1e293b").setFontColor("#ffffff");
     sheetAdmin.appendRow(["admin", "gamki2026", "Panitia GAMKI SUMUT"]);
     sheetAdmin.setFrozenRows(1);
+  }
+}
+
+function fixExistingNumbers(sheet) {
+  var lastRow = sheet.getLastRow();
+  if (lastRow <= 1) return;
+  
+  var rangeNoHp = sheet.getRange(2, 10, lastRow - 1, 1); // Kolom J (No HP)
+  var values = rangeNoHp.getValues();
+  var updated = false;
+  
+  for (var i = 0; i < values.length; i++) {
+    var val = values[i][0] ? values[i][0].toString().trim() : "";
+    if (val.startsWith("8")) {
+      values[i][0] = "'0" + val;
+      updated = true;
+    }
+  }
+  if (updated) {
+    rangeNoHp.setValues(values);
   }
 }
 
