@@ -3,414 +3,981 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GAMKI SUMUT 2026 - Portal Layanan Terpadu</title>
+    <title>Pendaftaran UMKM GAMKI SUMUT 2026</title>
     
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 for modern alerts (Replaces alert/confirm) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
         :root {
-            --primary: #0f2b5c;
-            --primary-light: #1e40af;
-            --accent-gold: #d97706;
-            --accent-gold-light: #fbbf24;
-            --bg-main: #f1f5f9;
-            --card-bg: rgba(255, 255, 255, 0.96);
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --text-muted: #94a3b8;
-            --danger: #ef4444;
-            --success: #10b981;
-            --radius-md: 12px;
-            --radius-xl: 20px;
-            --shadow-md: 0 10px 30px rgba(15, 43, 92, 0.08);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --primary-color: #0d6efd;
+            --secondary-color: #f8f9fa;
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            background-color: #f4f7f6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 60px; /* Space for fixed navbar */
         }
-
-        /* Ambient Background shapes */
-        .bg-shapes {
+        .view-section {
+            display: none; /* Hide all sections by default */
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .view-section.active {
+            display: block; /* Show active section */
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Loader Overlay */
+        #loader {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-            overflow: hidden;
-            pointer-events: none;
-        }
-
-        .shape {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.4;
-        }
-
-        .shape-1 {
-            top: -10%;
-            left: -10%;
-            width: 50vw;
-            height: 50vw;
-            background: radial-gradient(circle, #1e40af, #0f2b5c);
-        }
-
-        .shape-2 {
-            bottom: -10%;
-            right: -10%;
-            width: 45vw;
-            height: 45vw;
-            background: radial-gradient(circle, #f59e0b, #d97706);
-        }
-
-        /* Navbar Styling */
-        nav {
-            background: rgba(15, 43, 92, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 100;
-            padding: 16px 24px;
-        }
-
-        .nav-container {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: #fff;
-        }
-
-        .brand-logo {
-            background: linear-gradient(145deg, #ef4444, #dc2626);
-            color: #fff;
-            padding: 8px 12px;
-            border-radius: var(--radius-md);
-            font-size: 16px;
-            font-weight: 800;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            line-height: 1;
-        }
-
-        .brand-logo span {
-            font-size: 7px;
-            letter-spacing: 0.5px;
-            margin-top: 2px;
-        }
-
-        .brand-name {
-            font-family: 'Outfit', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 24px;
-            list-style: none;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 13px;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .nav-links a:hover {
-            color: var(--accent-gold-light);
-        }
-
-        /* Hero Section */
-        .hero {
-            text-align: center;
-            padding: 60px 24px 30px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(217, 119, 6, 0.1);
-            border: 1px solid rgba(217, 119, 6, 0.2);
-            color: var(--accent-gold);
-            padding: 6px 16px;
-            border-radius: 100px;
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .hero-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 12px;
-            line-height: 1.2;
-        }
-
-        .hero-subtitle {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 30px;
-        }
-
-        /* Portal Cards Layout */
-        .portal-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 24px 60px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
-            flex-grow: 1;
-        }
-
-        .portal-card {
-            background: var(--card-bg);
-            border-radius: var(--radius-xl);
-            border: 1px solid #e2e8f0;
-            padding: 36px 30px;
-            box-shadow: var(--shadow-md);
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .portal-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary-light), var(--accent-gold));
-            opacity: 0;
-            transition: var(--transition);
-        }
-
-        .portal-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(15, 43, 92, 0.12);
-        }
-
-        .portal-card:hover::before {
-            opacity: 1;
-        }
-
-        .icon-box {
-            width: 72px;
-            height: 72px;
-            border-radius: var(--radius-xl);
-            display: flex;
-            align-items: center;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 9999;
+            display: none;
             justify-content: center;
-            font-size: 28px;
-            margin-bottom: 24px;
-            transition: var(--transition);
-        }
-
-        .portal-card:nth-child(1) .icon-box {
-            background: rgba(13, 110, 253, 0.1);
-            color: #0d6efd;
-        }
-
-        .portal-card:nth-child(2) .icon-box {
-            background: rgba(217, 119, 6, 0.1);
-            color: var(--accent-gold);
-        }
-
-        .portal-card:hover .icon-box {
-            transform: scale(1.1);
-        }
-
-        .card-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 12px;
-        }
-
-        .card-desc {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-bottom: 30px;
-            flex-grow: 1;
-            max-width: 280px;
-        }
-
-        .btn {
-            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 12px 28px;
-            font-size: 14px;
-            font-weight: 700;
-            border-radius: var(--radius-md);
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-            width: 100%;
-            transition: var(--transition);
+            flex-direction: column;
         }
-
-        .btn-primary {
-            background: var(--primary);
-            color: #fff;
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), #0a58ca);
+            color: white;
+            padding: 80px 0;
+            border-radius: 0 0 20px 20px;
+            margin-top: -60px; /* Overlap navbar space */
+            padding-top: 120px;
         }
-
-        .btn-primary:hover {
-            background: var(--primary-light);
-            box-shadow: 0 4px 12px rgba(15, 43, 92, 0.2);
+        .card-stats {
+            transition: transform 0.2s;
         }
-
-        .btn-gold {
-            background: var(--accent-gold);
-            color: #fff;
+        .card-stats:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
         }
-
-        .btn-gold:hover {
-            background: #b45309;
-            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.2);
+        .table-responsive {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.075);
         }
-
-        /* Footer styling */
-        footer {
-            background: #091a3a;
-            color: var(--text-muted);
-            text-align: center;
-            padding: 24px;
-            font-size: 12px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        footer strong {
-            color: #fff;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 600px) {
-            .hero-title {
-                font-size: 26px;
-            }
-            .nav-links {
-                display: none;
-            }
-            .portal-container {
-                grid-template-columns: 1fr;
-            }
+        .dynamic-field-container {
+            display: none; /* Hidden by default for dynamic fields */
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="bg-shapes">
-        <div class="shape shape-1"></div>
-        <div class="shape shape-2"></div>
-    </div>
 
-    <!-- NAVBAR -->
-    <nav>
-        <div class="nav-container">
-            <a href="#" class="brand">
-                <div class="brand-logo">
-                    <i class="fa-solid fa-cross"></i>
-                    <span>GAMKI</span>
-                </div>
-                <span class="brand-name">GAMKI SUMUT 2026</span>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand font-weight-bold" href="#" onclick="navigate('landing')">
+                <i class="fas fa-store me-2"></i>GAMKI SUMUT 2026
             </a>
-            <ul class="nav-links">
-                <li><a href="#"><i class="fa-solid fa-house"></i> Beranda</a></li>
-                <li><a href="./my-profile/index.html"><i class="fa-solid fa-store"></i> UMKM</a></li>
-                <li><a href="./absensi/index.html"><i class="fa-solid fa-clipboard-user"></i> Absensi</a></li>
-            </ul>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto" id="nav-public">
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="navigate('landing')"><i class="fas fa-home me-1"></i>Beranda</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="navigate('pendaftaran')">Daftar UMKM</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="navigate('login')">Login Admin</a></li>
+                </ul>
+                <ul class="navbar-nav ms-auto d-none" id="nav-admin">
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="navigate('dashboard')">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="navigate('admin-pendaftaran')">Verifikasi</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="navigate('admin-peserta')">Data Peserta</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="navigate('admin-registrasi')">Registrasi Hari H</a></li>
+                    <li class="nav-item"><a class="nav-link text-danger" href="#" onclick="logout()">Logout</a></li>
+                </ul>
+            </div>
         </div>
     </nav>
 
-    <!-- HERO HEADER -->
-    <header class="hero">
-        <div class="hero-badge">
-            <i class="fa-solid fa-circle-check"></i> Portal Layanan Terpadu
-        </div>
-        <h1 class="hero-title">Gerakan Angkatan Muda Kristen Indonesia</h1>
-        <p class="hero-subtitle">Dewan Pimpinan Daerah (DPD) GAMKI Sumatera Utara - Akses cepat pendaftaran UMKM dan absensi kegiatan anggota dalam satu sistem.</p>
-    </header>
+    <!-- Global Loader -->
+    <div id="loader">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+        <h5 class="mt-3 text-secondary" id="loader-text">Memproses...</h5>
+    </div>
 
-    <!-- PORTAL SECTION -->
-    <main class="portal-container">
-        <!-- Card 1: Pendaftaran UMKM -->
-        <div class="portal-card">
-            <div class="icon-box">
-                <i class="fa-solid fa-shop"></i>
+    <!-- MAIN CONTAINER -->
+    <div class="container-fluid p-0" id="app">
+
+        <!-- VIEW: LANDING PAGE -->
+        <section id="view-landing" class="view-section active">
+            <div class="hero-section text-center">
+                <div class="container">
+                    <h1 class="display-4 fw-bold">Pendaftaran Pameran UMKM</h1>
+                    <h2 class="mb-4">GAMKI SUMATERA UTARA 2026</h2>
+                    <p class="lead mb-4">Tingkatkan visibilitas dan jangkauan bisnis Anda dengan bergabung dalam pameran UMKM terbesar tahun ini.</p>
+                    <button class="btn btn-light btn-lg px-5 rounded-pill shadow" onclick="navigate('pendaftaran')">
+                        Daftar Sekarang <i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                </div>
             </div>
-            <h2 class="card-title">Pendaftaran UMKM</h2>
-            <p class="card-desc">Daftarkan produk usaha Anda pada Pameran UMKM GAMKI SUMUT 2026. Lengkapi detail profil usaha, pemilik, dan legalitas.</p>
-            <a href="./my-profile/index.html" class="btn btn-primary">
-                Buka Pendaftaran <i class="fa-solid fa-arrow-right"></i>
-            </a>
-        </div>
-
-        <!-- Card 2: Absensi Anggota -->
-        <div class="portal-card">
-            <div class="icon-box">
-                <i class="fa-solid fa-user-check"></i>
+            <div class="container mt-5 mb-5 text-center">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                        <h4>Perluas Pasar</h4>
+                        <p class="text-muted">Bertemu langsung dengan ribuan pengunjung dan calon pembeli potensial.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <i class="fas fa-network-wired fa-3x text-primary mb-3"></i>
+                        <h4>Networking</h4>
+                        <p class="text-muted">Bangun relasi dengan sesama pengusaha dan investor daerah.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <i class="fas fa-lightbulb fa-3x text-primary mb-3"></i>
+                        <h4>Inovasi</h4>
+                        <p class="text-muted">Dapatkan inspirasi dan wawasan baru untuk pengembangan produk Anda.</p>
+                    </div>
+                </div>
             </div>
-            <h2 class="card-title">Absensi Kegiatan</h2>
-            <p class="card-desc">Formulir absensi kehadiran online untuk seluruh kegiatan anggota GAMKI. Didukung fitur foto bukti kehadiran lewat kamera HP.</p>
-            <a href="./absensi/index.html" class="btn btn-gold">
-                Isi Absensi <i class="fa-solid fa-arrow-right"></i>
-            </a>
-        </div>
-    </main>
+        </section>
 
-    <!-- FOOTER -->
-    <footer>
-        <p>&copy; 2026 <strong>DPD GAMKI Sumatera Utara</strong>. Semua Hak Cipta Dilindungi.</p>
-    </footer>
+        <!-- VIEW: PENDAFTARAN UMKM -->
+        <section id="view-pendaftaran" class="view-section">
+            <div class="container py-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="card shadow-sm border-0 rounded-3">
+                            <div class="card-header bg-white border-0 pt-4 pb-0 text-center">
+                                <h3 class="fw-bold text-primary">Formulir Pendaftaran UMKM</h3>
+                                <p class="text-muted">Harap isi data dengan lengkap dan benar.</p>
+                            </div>
+                            <div class="card-body p-4">
+                                <form id="form-pendaftaran" onsubmit="handlePendaftaran(event)">
+                                    <h5 class="border-bottom pb-2 mb-3">Profil Usaha</h5>
+                                    <div class="row g-3 mb-4">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Nama UMKM <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="nama_umkm" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Bidang Usaha <span class="text-danger">*</span></label>
+                                            <select class="form-select" name="bidang_usaha" required>
+                                                <option value="">Pilih Bidang...</option>
+                                                <option value="Kuliner">FOOD</option>
+                                                <option value="Fashion">BEVERAGE</option>
+                                                <option value="Kriya">EKRAF (Non F&B)</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Nama Produk Utama <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="nama_produk" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Legalitas Usaha Badan</label>
+                                            <select class="form-select" name="legalitas">
+                                                <option value="Perorangan">Perorangan</option>
+                                                <option value="PT">PT</option>
+                                                <option value="CV">CV</option>
+                                                <option value="Firma">UD</option>
+                                                <option value="Koperasi">LAINNYA</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label">Alamat Usaha <span class="text-danger">*</span></label>
+                                            <textarea class="form-control" name="alamat" rows="2" required></textarea>
+                                        </div>
+                                    </div>
+
+                                    <h5 class="border-bottom pb-2 mb-3">Profil Pemilik</h5>
+                                    <div class="row g-3 mb-4">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Nama Lengkap Pemilik <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="nama_pemilik" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Jabatan (Jika Badan Usaha)</label>
+                                            <input type="text" class="form-control" name="jabatan" placeholder="Contoh: Direktur, Owner">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Nomor WhatsApp Aktif <span class="text-danger">*</span></label>
+                                            <input type="tel" class="form-control" name="no_hp" required placeholder="Contoh: 08123456789">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Alamat Email Aktif <span class="text-danger">*</span></label>
+                                            <input type="email" class="form-control" name="email" required>
+                                        </div>
+                                    </div>
+
+                                    <h5 class="border-bottom pb-2 mb-3">Perizinan & Sertifikasi</h5>
+                                    <div class="row g-3 mb-4">
+                                        <!-- NIB -->
+                                        <div class="col-md-6">
+                                            <label class="form-label">Status NIB</label>
+                                            <select class="form-select status-trigger" data-target="nib_container" name="status_nib">
+                                                <option value="Belum Memiliki">Belum Memiliki</option>
+                                                <option value="Ada">Ada</option>
+                                            </select>
+                                            <div id="nib_container" class="dynamic-field-container">
+                                                <input type="text" class="form-control form-control-sm mt-2" name="nomor_nib" placeholder="Masukkan Nomor NIB">
+                                            </div>
+                                        </div>
+                                        <!-- NPWP -->
+                                        <div class="col-md-6">
+                                            <label class="form-label">Status NPWP</label>
+                                            <select class="form-select status-trigger" data-target="npwp_container" name="status_npwp">
+                                                <option value="Belum Memiliki">Belum Memiliki</option>
+                                                <option value="Ada">Ada</option>
+                                            </select>
+                                            <div id="npwp_container" class="dynamic-field-container">
+                                                <input type="text" class="form-control form-control-sm mt-2" name="nomor_npwp" placeholder="Masukkan Nomor NPWP">
+                                            </div>
+                                        </div>
+                                        <!-- PIRT -->
+                                        <div class="col-md-6">
+                                            <label class="form-label">Status PIRT</label>
+                                            <select class="form-select status-trigger" data-target="pirt_container" name="status_pirt">
+                                                <option value="Belum Memiliki">Belum Memiliki</option>
+                                                <option value="Ada">Ada</option>
+                                            </select>
+                                            <div id="pirt_container" class="dynamic-field-container">
+                                                <input type="text" class="form-control form-control-sm mt-2" name="nomor_pirt" placeholder="Masukkan Nomor PIRT">
+                                            </div>
+                                        </div>
+                                        <!-- Merk Dagang -->
+                                        <div class="col-md-6">
+                                            <label class="form-label">Sertifikat Merk Dagang</label>
+                                            <select class="form-select status-trigger" data-target="merk_container" name="status_merk">
+                                                <option value="Belum Memiliki">Belum Memiliki</option>
+                                                <option value="Ada">Ada</option>
+                                            </select>
+                                            <div id="merk_container" class="dynamic-field-container">
+                                                <input type="text" class="form-control form-control-sm mt-2" name="nomor_merk" placeholder="Masukkan Nomor Sertifikat Merk">
+                                            </div>
+                                        </div>
+                                        <!-- Halal -->
+                                        <div class="col-md-6">
+                                            <label class="form-label">Sertifikat Halal</label>
+                                            <select class="form-select status-trigger" data-target="halal_container" name="status_halal">
+                                                <option value="Belum Memiliki">Belum Memiliki</option>
+                                                <option value="Ada">Ada</option>
+                                            </select>
+                                            <div id="halal_container" class="dynamic-field-container">
+                                                <input type="text" class="form-control form-control-sm mt-2" name="nomor_halal" placeholder="Masukkan Nomor Sertifikat Halal">
+                                            </div>
+                                        </div>
+                                        <!-- Export -->
+                                        <div class="col-md-6">
+                                            <label class="form-label">Kegiatan Ekspor</label>
+                                            <select class="form-select" name="kegiatan_export">
+                                                <option value="Belum Pernah">Belum Pernah</option>
+                                                <option value="Pernah">Pernah</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <h5 class="border-bottom pb-2 mb-3">Foto Produk Utama</h5>
+                                    <div class="mb-4">
+                                        <label class="form-label">Upload Foto (Maks 2MB) <span class="text-danger">*</span></label>
+                                        <input type="file" class="form-control" id="foto_produk_file" accept="image/jpeg, image/png, image/jpg" required>
+                                        <small class="text-muted">Akan digunakan untuk keperluan promosi dan verifikasi.</small>
+                                        <input type="hidden" name="foto_produk_base64" id="foto_produk_base64">
+                                    </div>
+
+                                    <div class="d-grid mt-4">
+                                        <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow-sm">
+                                            <i class="fas fa-paper-plane me-2"></i>Kirim Pendaftaran
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: LOGIN ADMIN -->
+        <section id="view-login" class="view-section">
+            <div class="container py-5 mt-5">
+                <div class="row justify-content-center">
+                    <div class="col-md-5">
+                        <div class="card shadow border-0 rounded-4">
+                            <div class="card-body p-5">
+                                <div class="text-center mb-4">
+                                    <i class="fas fa-user-shield fa-3x text-primary mb-3"></i>
+                                    <h3 class="fw-bold">Login Admin</h3>
+                                    <p class="text-muted">Portal Panitia GAMKI SUMUT 2026</p>
+                                </div>
+                                <form id="form-login" onsubmit="handleLogin(event)">
+                                    <div class="mb-3">
+                                        <label class="form-label">Username</label>
+                                        <input type="text" class="form-control form-control-lg" name="username" required>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label">Password</label>
+                                        <input type="password" class="form-control form-control-lg" name="password" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100 btn-lg rounded-pill">Login Dashboard</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: ADMIN DASHBOARD -->
+        <section id="view-dashboard" class="view-section">
+            <div class="container py-5">
+                <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+                    <h2 class="fw-bold"><i class="fas fa-tachometer-alt me-2 text-primary"></i>Dashboard Statistik</h2>
+                    <span class="badge bg-primary fs-6" id="admin-name-badge">Admin</span>
+                </div>
+                
+                <div class="row g-4 mb-4">
+                    <div class="col-md-4">
+                        <div class="card card-stats border-0 shadow-sm rounded-3 bg-white text-center p-4">
+                            <i class="fas fa-file-signature fa-3x text-warning mb-3"></i>
+                            <h5 class="text-muted">Total Pendaftar</h5>
+                            <h1 class="fw-bold" id="stat-pendaftar">0</h1>
+                            <small>Menunggu Verifikasi</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card card-stats border-0 shadow-sm rounded-3 bg-white text-center p-4">
+                            <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                            <h5 class="text-muted">Total Peserta</h5>
+                            <h1 class="fw-bold" id="stat-peserta">0</h1>
+                            <small>Pendaftaran Diterima (ACC)</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card card-stats border-0 shadow-sm rounded-3 bg-white text-center p-4">
+                            <i class="fas fa-qrcode fa-3x text-primary mb-3"></i>
+                            <h5 class="text-muted">Total Registrasi</h5>
+                            <h1 class="fw-bold" id="stat-registrasi">0</h1>
+                            <small>Hadir di Hari H</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-5">
+                    <button class="btn btn-outline-primary" onclick="loadDashboardData()"><i class="fas fa-sync-alt me-2"></i>Refresh Data</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: ADMIN PENDAFTARAN (VERIFIKASI) -->
+        <section id="view-admin-pendaftaran" class="view-section">
+            <div class="container py-5">
+                <h2 class="fw-bold mb-4"><i class="fas fa-list me-2 text-primary"></i>Daftar Pendaftaran Masuk</h2>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>No Registrasi</th>
+                                <th>Tanggal</th>
+                                <th>Nama UMKM</th>
+                                <th>Pemilik</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-pendaftaran">
+                            <!-- Data injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: ADMIN PESERTA (ACC) -->
+        <section id="view-admin-peserta" class="view-section">
+            <div class="container py-5">
+                <h2 class="fw-bold mb-4"><i class="fas fa-users me-2 text-success"></i>Daftar Peserta Resmi</h2>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID Peserta</th>
+                                <th>Asal Pendaftaran</th>
+                                <th>Nama UMKM</th>
+                                <th>Pemilik</th>
+                                <th>No WA</th>
+                                <th>Status Registrasi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-peserta">
+                            <!-- Data injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: ADMIN REGISTRASI HARI H -->
+        <section id="view-admin-registrasi" class="view-section">
+            <div class="container py-5">
+                <h2 class="fw-bold mb-4"><i class="fas fa-calendar-check me-2 text-primary"></i>Registrasi Ulang (Hari H)</h2>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-body">
+                                <h5>Input ID Peserta</h5>
+                                <div class="input-group">
+                                    <input type="text" id="input-id-peserta" class="form-control" placeholder="Contoh: PST-2026... ">
+                                    <button class="btn btn-primary" onclick="prosesRegistrasiManual()">Proses Registrasi</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class="mb-3">Riwayat Kedatangan</h4>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID Registrasi</th>
+                                <th>Waktu Hadir</th>
+                                <th>ID Peserta</th>
+                                <th>Nama UMKM</th>
+                                <th>Nama Pemilik</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-registrasi">
+                            <!-- Data injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- MODAL DETAIL PENDAFTARAN -->
+    <div class="modal fade" id="modalDetail" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Detail Pendaftaran UMKM</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modal-detail-content">
+                    <!-- Injected via JS -->
+                </div>
+                <div class="modal-footer bg-light" id="modal-detail-actions">
+                    <!-- Buttons Injected via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        /**
+         * ==========================================
+         * KONFIGURASI APLIKASI
+         * ==========================================
+         */
+        // TODO: GANTI URL INI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA!
+        const API_URL = "https://script.google.com/macros/s/AKfycbyH_ydVh5hWlNBb8VhLcS24ZQZHey6MN7cu4uIwk_0Lt2Tnu8dKBXHgfM_LtbyoFFidJQ/exec"; // CONTOH URL. GANTI!
+        
+        let currentUser = null; // Menyimpan data admin yang login
+        let currentPendaftaranData = []; // Cache data pendaftaran
+
+        // Inisialisasi saat halaman dimuat
+        document.addEventListener("DOMContentLoaded", () => {
+            initDynamicFields();
+            initImageConverter();
+            checkLoginStatus();
+            
+            // Cek hash url jika mau direct link (opsional)
+            navigate('landing'); 
+        });
+
+        /**
+         * ==========================================
+         * SISTEM ROUTING & UI HELPER
+         * ==========================================
+         */
+        function navigate(viewId) {
+            // Sembunyikan semua view
+            document.querySelectorAll('.view-section').forEach(el => {
+                el.classList.remove('active');
+            });
+            // Tampilkan view yang dipilih
+            const targetView = document.getElementById('view-' + viewId);
+            if (targetView) {
+                targetView.classList.add('active');
+            }
+
+            // Trigger load data jika masuk halaman admin
+            if (viewId === 'dashboard') loadDashboardData();
+            if (viewId === 'admin-pendaftaran') loadDataPendaftaran();
+            if (viewId === 'admin-peserta') loadDataPeserta();
+            if (viewId === 'admin-registrasi') loadDataRegistrasi();
+
+            window.scrollTo(0,0);
+        }
+
+        function showLoader(text = "Memproses...") {
+            document.getElementById('loader-text').innerText = text;
+            document.getElementById('loader').style.display = 'flex';
+        }
+
+        function hideLoader() {
+            document.getElementById('loader').style.display = 'none';
+        }
+
+        /**
+         * ==========================================
+         * LOGIKA FORM PENDAFTARAN
+         * ==========================================
+         */
+        function initDynamicFields() {
+            const triggers = document.querySelectorAll('.status-trigger');
+            triggers.forEach(trigger => {
+                trigger.addEventListener('change', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const container = document.getElementById(targetId);
+                    const inputField = container.querySelector('input');
+                    
+                    if (this.value === 'Ada') {
+                        container.style.display = 'block';
+                        inputField.setAttribute('required', 'true');
+                    } else {
+                        container.style.display = 'none';
+                        inputField.removeAttribute('required');
+                        inputField.value = ''; // Reset nilai
+                    }
+                });
+            });
+        }
+
+        // Mengonversi File Gambar menjadi Base64 sebelum dikirim
+        function initImageConverter() {
+            const fileInput = document.getElementById('foto_produk_file');
+            const hiddenInput = document.getElementById('foto_produk_base64');
+
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                // Validasi ukuran (Maks 2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    Swal.fire('File Terlalu Besar', 'Ukuran foto maksimal 2MB.', 'error');
+                    this.value = ''; // Reset
+                    hiddenInput.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    hiddenInput.value = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        /**
+         * ==========================================
+         * API SERVICE (Komunikasi dengan GAS)
+         * ==========================================
+         */
+        async function apiCall(method, action, payload = null) {
+            try {
+                let url = API_URL;
+                let options = { method: method };
+
+                if (method === 'GET') {
+                    url += `?action=${action}`;
+                } else if (method === 'POST') {
+                    // Google Apps Script requires body to be stringified JSON and we handle it in doPost
+                    payload.action = action; // inject action into payload
+                    options.body = JSON.stringify(payload);
+                    options.headers = {
+                        "Content-Type": "text/plain;charset=utf-8" // Trick to avoid CORS preflight issues in GAS
+                    };
+                }
+
+                const response = await fetch(url, options);
+                const result = await response.json();
+                
+                if(!result.success) {
+                    throw new Error(result.message);
+                }
+                return result;
+            } catch (error) {
+                console.error("API Error:", error);
+                Swal.fire('Terjadi Kesalahan', error.message || 'Gagal terhubung ke server.', 'error');
+                throw error;
+            }
+        }
+
+        /**
+         * ==========================================
+         * HANDLER PENDAFTARAN UMKM
+         * ==========================================
+         */
+        async function handlePendaftaran(e) {
+            e.preventDefault();
+            
+            const form = document.getElementById('form-pendaftaran');
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            // Validasi Base64
+            if (!data.foto_produk_base64) {
+                Swal.fire('Peringatan', 'Harap tunggu proses unggah foto atau pilih ulang foto.', 'warning');
+                return;
+            }
+
+            showLoader("Mengirim Data & Mengunggah Foto...\nMohon jangan tutup halaman ini.");
+            
+            try {
+                const res = await apiCall('POST', 'daftar', data);
+                hideLoader();
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: res.message + '\nNomor Registrasi Anda: ' + res.data.id_pendaftaran,
+                    icon: 'success',
+                    confirmButtonText: 'Tutup'
+                }).then(() => {
+                    form.reset();
+                    navigate('landing');
+                });
+            } catch (err) {
+                hideLoader();
+                // Error handled in apiCall
+            }
+        }
+
+        /**
+         * ==========================================
+         * OTENTIKASI ADMIN
+         * ==========================================
+         */
+        async function handleLogin(e) {
+            e.preventDefault();
+            const form = document.getElementById('form-login');
+            const data = Object.fromEntries(new FormData(form).entries());
+
+            showLoader("Memverifikasi kredensial...");
+            try {
+                const res = await apiCall('POST', 'login', data);
+                hideLoader();
+                
+                // Simpan sesi di memory dan localStorage
+                currentUser = res.data;
+                localStorage.setItem('adminUser', JSON.stringify(currentUser));
+                
+                Swal.fire('Berhasil Login', `Selamat datang, ${currentUser.name}!`, 'success').then(() => {
+                    updateNavbarStatus();
+                    navigate('dashboard');
+                    form.reset();
+                });
+            } catch (err) {
+                hideLoader();
+            }
+        }
+
+        function checkLoginStatus() {
+            const saved = localStorage.getItem('adminUser');
+            if (saved) {
+                currentUser = JSON.parse(saved);
+                updateNavbarStatus();
+            }
+        }
+
+        function updateNavbarStatus() {
+            if (currentUser) {
+                document.getElementById('nav-public').classList.add('d-none');
+                document.getElementById('nav-admin').classList.remove('d-none');
+                document.getElementById('admin-name-badge').innerText = currentUser.name;
+            } else {
+                document.getElementById('nav-public').classList.remove('d-none');
+                document.getElementById('nav-admin').classList.add('d-none');
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('adminUser');
+            updateNavbarStatus();
+            navigate('landing');
+            Swal.fire('Logout', 'Anda telah keluar dari dashboard admin.', 'info');
+        }
+
+        function enforceAdmin() {
+            if (!currentUser) {
+                Swal.fire('Akses Ditolak', 'Anda harus login sebagai admin.', 'error');
+                navigate('login');
+                return false;
+            }
+            return true;
+        }
+
+        /**
+         * ==========================================
+         * LOGIKA DASHBOARD & TABEL ADMIN
+         * ==========================================
+         */
+        async function loadDashboardData() {
+            if (!enforceAdmin()) return;
+            showLoader("Memuat Statistik...");
+            try {
+                // Fetch ketiganya secara paralel (Asynchronous)
+                const [resPend, resPes, resReg] = await Promise.all([
+                    apiCall('GET', 'getPendaftaran'),
+                    apiCall('GET', 'getPeserta'),
+                    apiCall('GET', 'getRegistrasi')
+                ]);
+
+                // Filter pendaftaran yang masih PENDING saja untuk badge "Menunggu Verifikasi"
+                const pendingList = resPend.data.filter(d => d.status === "Menunggu Verifikasi");
+
+                document.getElementById('stat-pendaftar').innerText = pendingList.length;
+                document.getElementById('stat-peserta').innerText = resPes.data.length;
+                document.getElementById('stat-registrasi').innerText = resReg.data.length;
+                
+                hideLoader();
+            } catch (err) {
+                hideLoader();
+            }
+        }
+
+        async function loadDataPendaftaran() {
+            if (!enforceAdmin()) return;
+            showLoader("Memuat Daftar Pendaftaran...");
+            try {
+                const res = await apiCall('GET', 'getPendaftaran');
+                currentPendaftaranData = res.data; // Simpan di cache untuk keperluan modal detail
+                
+                const tbody = document.getElementById('tbody-pendaftaran');
+                tbody.innerHTML = '';
+
+                if (res.data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">Belum ada data pendaftaran.</td></tr>`;
+                } else {
+                    res.data.forEach(item => {
+                        let statusBadge = 'bg-secondary';
+                        if (item.status === 'Diterima') statusBadge = 'bg-success';
+                        if (item.status === 'Ditolak') statusBadge = 'bg-danger';
+                        if (item.status === 'Menunggu Verifikasi') statusBadge = 'bg-warning text-dark';
+
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td><span class="fw-bold">${item.id_pendaftaran}</span></td>
+                            <td>${item.timestamp.substring(0, 10)}</td>
+                            <td>${item.nama_umkm}</td>
+                            <td>${item.nama_pemilik}</td>
+                            <td><span class="badge ${statusBadge}">${item.status}</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-info text-white" onclick="lihatDetailPendaftaran('${item.id_pendaftaran}')">
+                                    <i class="fas fa-eye"></i> Detail
+                                </button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+                hideLoader();
+            } catch (err) {
+                hideLoader();
+            }
+        }
+
+        async function loadDataPeserta() {
+            if (!enforceAdmin()) return;
+            showLoader("Memuat Daftar Peserta...");
+            try {
+                const res = await apiCall('GET', 'getPeserta');
+                const tbody = document.getElementById('tbody-peserta');
+                tbody.innerHTML = '';
+
+                if (res.data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">Belum ada data peserta yang disetujui.</td></tr>`;
+                } else {
+                    res.data.forEach(item => {
+                        let regBadge = item.status_registrasi === 'Sudah Registrasi' ? 'bg-success' : 'bg-warning text-dark';
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td><span class="fw-bold text-primary">${item.id_peserta}</span></td>
+                            <td>${item.id_pendaftaran}</td>
+                            <td>${item.nama_umkm}</td>
+                            <td>${item.nama_pemilik}</td>
+                            <td>${item.no_hp}</td>
+                            <td><span class="badge ${regBadge}">${item.status_registrasi}</span></td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+                hideLoader();
+            } catch (err) {
+                hideLoader();
+            }
+        }
+
+        /**
+         * ==========================================
+         * LOGIKA AKSI ADMIN & MODAL
+         * ==========================================
+         */
+        function lihatDetailPendaftaran(id) {
+            const data = currentPendaftaranData.find(d => d.id_pendaftaran === id);
+            if (!data) return;
+
+            const modalBody = document.getElementById('modal-detail-content');
+            const modalActions = document.getElementById('modal-detail-actions');
+
+            // Render Info
+            modalBody.innerHTML = `
+                <div class="row">
+                    <div class="col-md-4 text-center mb-3">
+                        <img src="${data.foto_produk_url}" class="img-fluid rounded shadow-sm border" alt="Foto Produk" style="max-height: 200px; object-fit: cover;">
+                        <a href="${data.foto_produk_url}" target="_blank" class="btn btn-sm btn-outline-primary mt-2 d-block">Lihat Foto Asli</a>
+                    </div>
+                    <div class="col-md-8">
+                        <table class="table table-sm table-borderless">
+                            <tr><th width="35%">ID Pendaftaran</th><td>: <span class="fw-bold">${data.id_pendaftaran}</span></td></tr>
+                            <tr><th>Status</th><td>: <span class="badge bg-secondary">${data.status}</span></td></tr>
+                            <tr><th>Nama UMKM</th><td>: ${data.nama_umkm} (${data.legalitas})</td></tr>
+                            <tr><th>Bidang Usaha</th><td>: ${data.bidang_usaha}</td></tr>
+                            <tr><th>Produk Utama</th><td>: ${data.nama_produk}</td></tr>
+                            <tr><th>Nama Pemilik</th><td>: ${data.nama_pemilik} (${data.jabatan})</td></tr>
+                            <tr><th>Kontak</th><td>: ${data.no_hp} / ${data.email}</td></tr>
+                        </table>
+                    </div>
+                </div>
+                <hr>
+                <h6 class="fw-bold">Data Legalitas:</h6>
+                <div class="row text-muted text-sm">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check-circle text-success me-1"></i> <b>NIB:</b> ${data.status_nib} (${data.nomor_nib})</li>
+                            <li><i class="fas fa-check-circle text-success me-1"></i> <b>NPWP:</b> ${data.status_npwp} (${data.nomor_npwp})</li>
+                            <li><i class="fas fa-check-circle text-success me-1"></i> <b>PIRT:</b> ${data.status_pirt} (${data.nomor_pirt})</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                         <ul class="list-unstyled">
+                            <li><i class="fas fa-check-circle text-success me-1"></i> <b>Merk:</b> ${data.status_merk} (${data.nomor_merk})</li>
+                            <li><i class="fas fa-check-circle text-success me-1"></i> <b>Halal:</b> ${data.status_halal} (${data.nomor_halal})</li>
+                            <li><i class="fas fa-globe text-primary me-1"></i> <b>Ekspor:</b> ${data.kegiatan_export}</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+
+            // Render Actions based on status
+            if (data.status === 'Menunggu Verifikasi') {
+                modalActions.innerHTML = `
+                    <button type="button" class="btn btn-danger" onclick="prosesVerifikasi('${data.id_pendaftaran}', 'tolak')"><i class="fas fa-times me-1"></i> Tolak</button>
+                    <button type="button" class="btn btn-success" onclick="prosesVerifikasi('${data.id_pendaftaran}', 'terima')"><i class="fas fa-check me-1"></i> Terima (ACC)</button>
+                `;
+            } else {
+                modalActions.innerHTML = `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>`;
+            }
+
+            const modal = new bootstrap.Modal(document.getElementById('modalDetail'));
+            modal.show();
+        }
+
+        async function prosesVerifikasi(idPendaftaran, actionType) {
+            const actionWord = actionType === 'terima' ? 'Menerima' : 'Menolak';
+            
+            Swal.fire({
+                title: `Yakin ingin ${actionWord}?`,
+                text: actionType === 'terima' ? "Data akan masuk ke tabel Peserta dan email akan dikirim." : "Data pendaftaran akan ditolak.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: actionType === 'terima' ? '#198754' : '#dc3545',
+                confirmButtonText: 'Ya, Proses!'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    // Close modal first
+                    bootstrap.Modal.getInstance(document.getElementById('modalDetail')).hide();
+                    
+                    showLoader(`Memproses penolakan/penerimaan...`);
+                    try {
+                        const payload = {
+                            id_pendaftaran: idPendaftaran,
+                            admin_user: currentUser.username
+                        };
+                        const res = await apiCall('POST', actionType, payload);
+                        hideLoader();
+                        Swal.fire('Berhasil!', res.message, 'success').then(() => {
+                            loadDataPendaftaran(); // Refresh table
+                        });
+                    } catch (err) {
+                        hideLoader();
+                    }
+                }
+            });
+        }
+
+        /**
+         * ==========================================
+         * REGISTRASI HARI H
+         * ==========================================
+         */
+         async function loadDataRegistrasi() {
+            if (!enforceAdmin()) return;
+            showLoader("Memuat Data Registrasi...");
+            try {
+                const res = await apiCall('GET', 'getRegistrasi');
+                const tbody = document.getElementById('tbody-registrasi');
+                tbody.innerHTML = '';
+
+                if (res.data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted">Belum ada peserta yang melakukan registrasi kehadiran.</td></tr>`;
+                } else {
+                    res.data.forEach(item => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td><span class="badge bg-primary">${item.id_registrasi}</span></td>
+                            <td>${item.timestamp_registrasi}</td>
+                            <td><span class="fw-bold">${item.id_peserta}</span></td>
+                            <td>${item.nama_umkm}</td>
+                            <td>${item.nama_pemilik}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+                hideLoader();
+            } catch (err) {
+                hideLoader();
+            }
+        }
+
+        async function prosesRegistrasiManual() {
+            const idInput = document.getElementById('input-id-peserta');
+            const idPeserta = idInput.value.trim();
+
+            if (!idPeserta) {
+                Swal.fire('Error', 'Harap masukkan ID Peserta!', 'warning');
+                return;
+            }
+
+            showLoader("Mencatat Kehadiran...");
+            try {
+                const payload = {
+                    id_peserta: idPeserta,
+                    admin_user: currentUser.username
+                };
+                const res = await apiCall('POST', 'registrasi', payload);
+                hideLoader();
+                Swal.fire('Berhasil!', res.message, 'success').then(() => {
+                    idInput.value = '';
+                    loadDataRegistrasi(); // Refresh tabel kehadiran
+                });
+            } catch (err) {
+                hideLoader();
+            }
+        }
+    </script>
 </body>
 </html>
