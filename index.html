@@ -30,6 +30,9 @@
             font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
             padding-top: 60px;
         }
+        .dynamic-field-container {
+            display: none;
+        }
         .view-section {
             display: none;
             animation: fadeIn 0.2s ease-in-out;
@@ -821,20 +824,26 @@
         function initDynamicFields() {
             const triggers = document.querySelectorAll('.status-trigger');
             triggers.forEach(trigger => {
-                trigger.addEventListener('change', function() {
-                    const targetId = this.getAttribute('data-target');
+                const updateField = function() {
+                    const targetId = trigger.getAttribute('data-target');
                     const container = document.getElementById(targetId);
+                    if (!container) return;
                     const inputField = container.querySelector('input');
                     
-                    if (this.value === 'Ada') {
+                    if (trigger.value === 'Ada') {
                         container.style.display = 'block';
-                        inputField.setAttribute('required', 'true');
+                        if (inputField) inputField.setAttribute('required', 'true');
                     } else {
                         container.style.display = 'none';
-                        inputField.removeAttribute('required');
-                        inputField.value = ''; // Reset nilai
+                        if (inputField) {
+                            inputField.removeAttribute('required');
+                            inputField.value = ''; // Reset nilai jika Belum Memiliki
+                        }
                     }
-                });
+                };
+
+                trigger.addEventListener('change', updateField);
+                updateField(); // Inisialisasi awal saat halaman dimuat
             });
         }
 
