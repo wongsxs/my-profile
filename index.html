@@ -1569,8 +1569,10 @@
         function populateSettingsUI(settings) {
             if (document.getElementById('setting_status_pendaftaran')) document.getElementById('setting_status_pendaftaran').value = settings.status || 'buka';
             if (document.getElementById('setting_wa_panitia')) document.getElementById('setting_wa_panitia').value = (settings.wa && !settings.wa.includes('6281234567890')) ? settings.wa : '0822-7239-4818 / 0881-0102-83260';
-            if (document.getElementById('setting_lokasi_kegiatan')) document.getElementById('setting_lokasi_kegiatan').value = (settings.lokasi && !settings.lokasi.includes('Kota Medan, SUMUT')) ? settings.lokasi : 'Lt. 10 Kantor Bank Sumut, Jl. Imam Bonjol, Medan';
-            if (document.getElementById('setting_status_biaya')) document.getElementById('setting_status_biaya').value = '';
+            if (document.getElementById('setting_lokasi_kegiatan')) {
+                const isOldLokasi = !settings.lokasi || settings.lokasi === 'Sumatera Utara' || settings.lokasi === 'Kota Medan, SUMUT';
+                document.getElementById('setting_lokasi_kegiatan').value = isOldLokasi ? 'Lt. 10 Kantor Bank Sumut, Jl. Imam Bonjol, Medan' : settings.lokasi;
+            }
         }
 
         function applySettings(settings) {
