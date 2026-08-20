@@ -1443,6 +1443,17 @@
             csvContent += headers.join(";") + "\n";
 
             currentPendaftaranData.forEach(d => {
+                let dateFormatted = '-';
+                if (d.timestamp) {
+                    let s = d.timestamp.toString().replace('T', ' ').replace('Z', '').substring(0, 10);
+                    const parts = s.split('-');
+                    if (parts.length === 3) {
+                        dateFormatted = `${parts[2]}/${parts[1]}/${parts[0]}`; // 20/08/2026
+                    } else {
+                        dateFormatted = s;
+                    }
+                }
+
                 const cleanHp = d.no_hp ? d.no_hp.toString().replace(/^'/, '') : '-';
                 const cleanNib = d.nomor_nib ? d.nomor_nib.toString().replace(/^'/, '') : '-';
                 const cleanNpwp = d.nomor_npwp ? d.nomor_npwp.toString().replace(/^'/, '') : '-';
@@ -1452,7 +1463,7 @@
 
                 let row = [
                     d.id_pendaftaran || '',
-                    d.timestamp ? d.timestamp.substring(0, 10) : '',
+                    dateFormatted,
                     (d.nama_umkm || '').replace(/;/g, ' '),
                     d.bidang_usaha || '',
                     (d.nama_produk || '').replace(/;/g, ' '),
