@@ -160,12 +160,104 @@ function formatTextNumber(val) {
 function handleDaftar(data) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName("Pendaftaran");
+  var rows = sheet.getDataRange().getValues();
   
+  var noHpInput = data.no_hp ? data.no_hp.toString().trim() : "";
+  var emailInput = data.email ? data.email.toString().trim().toLowerCase() : "";
+  
+  var cleanHp = noHpInput.replace(/[^0-9]/g, "");
+  if (cleanHp.startsWith("0")) cleanHp = cleanHp.substring(1);
+  
+  var existingRowIndex = -1;
+  var existingStatus = "";
+  var existingIdPendaftaran = "";
+  
+  // Pindai data yang sudah ada di sheet (mencari kecocokan No HP atau Email)
+  for (var i = 1; i < rows.length; i++) {
+    var rowHp = rows[i][9] ? rows[i][9].toString().replace(/[^0-9]/g, "") : "";
+    if (rowHp.startsWith("0")) rowHp = rowHp.substring(1);
+    
+    var rowEmail = rows[i][10] ? rows[i][10].toString().trim().toLowerCase() : "";
+    var rowStatus = rows[i][23] ? rows[i][23].toString() : "";
+    
+    if ((cleanHp !== "" && rowHp === cleanHp) || (emailInput !== "" && rowEmail === emailInput)) {
+      existingRowIndex = i + 1; // 1-based index
+      existingStatus = rowStatus;
+      existingIdPendaftaran = rows[i][0];
+      break;
+    }
+  }
+  
+  // KASUS 1: Pendaftaran Sudah DITERIMA (ACC)
+  if (existingRowIndex !== -1 && existingStatus === "Diterima") {
+    return {
+      success: false,
+      message: "Nomor HP atau Email ini SUDAH DITERIMA (ACC) sebagai Peserta Resmi! Tidak perlu mendaftar ulang."
+    };
+  }
+  
+  // KASUS 2: Pendaftaran Masih Menunggu Verifikasi
+  if (existingRowIndex !== -1 && existingStatus === "Menunggu Verifikasi") {
+    return {
+      success: false,
+      message: "Nomor HP atau Email ini SUDAH TERDAFTAR dan sedang dalam proses verifikasi panitia. Mohon cek email Anda!"
+    };
+  }
+  
+  // KASUS 3: Pendaftaran Pernah DITOLAK -> MENIMPA (UPDATE) BARIS LAMA
+  if (existingRowIndex !== -1 && existingStatus.indexOf("Ditolak") !== -1) {
+    var now = new Date();
+    var timestamp = Utilities.formatDate(now, Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm:ss");
+    
+    var fotoUrl = "-";
+    if (data.foto_produk_base64) {
+      fotoUrl = savePhotoToDrive(data.foto_produk_base64, data.nama_umkm);
+    }
+    
+    var updatedRowValues = [
+      existingIdPendaftaran, // Tetap menggunakan ID Pendaftaran yang sama!
+      timestamp,
+      data.nama_umkm || "-",
+      data.bidang_usaha || "-",
+      data.nama_produk || "-",
+      data.legalitas || "-",
+      data.alamat || "-",
+      data.nama_pemilik || "-",
+      data.jabatan || "-",
+      formatTextNumber(data.no_hp),
+      data.email || "-",
+      data.status_nib || "Belum Memiliki",
+      formatTextNumber(data.nomor_nib),
+      data.status_npwp || "Belum Memiliki",
+      formatTextNumber(data.nomor_npwp),
+      data.status_pirt || "Belum Memiliki",
+      formatTextNumber(data.nomor_pirt),
+      data.status_merk || "Belum Memiliki",
+      formatTextNumber(data.nomor_merk),
+      data.status_halal || "Belum Memiliki",
+      formatTextNumber(data.nomor_halal),
+      data.kegiatan_export || "Belum Pernah",
+      fotoUrl,
+      "Menunggu Verifikasi" // Status di-reset kembali ke Menunggu Verifikasi!
+    ];
+    
+    sheet.getRange(existingRowIndex, 1, 1, updatedRowValues.length).setValues([updatedRowValues]);
+    
+    // Kirim Email Konfirmasi Pendaftaran Ulang
+    sendEmailKonfirmasiPendaftaran(data.email, data.nama_pemilik, data.nama_umkm, existingIdPendaftaran);
+    
+    return {
+      success: true,
+      message: "Pendaftaran ulang Anda berhasil diperbarui! Berkas baru Anda sedang diverifikasi panitia.",
+      data: { id_pendaftaran: existingIdPendaftaran }
+    };
+  }
+  
+  // KASUS 4: Pendaftaran Baru (Baru Pertama Kali Daftar)
   var now = new Date();
   var timestamp = Utilities.formatDate(now, Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm:ss");
   var idPendaftaran = "REG-2026-" + Math.floor(1000 + Math.random() * 9000);
   
-  // Simpan foto ke Google Drive
   var fotoUrl = "-";
   if (data.foto_produk_base64) {
     fotoUrl = savePhotoToDrive(data.foto_produk_base64, data.nama_umkm);
