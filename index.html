@@ -1618,8 +1618,11 @@
             
             // 4. Apply Lokasi Badge on Hero
             const heroBadges = document.querySelectorAll('.hero-section .badge');
-            if (heroBadges.length >= 2 && settings.lokasi) {
-                heroBadges[1].innerHTML = `<i class="fas fa-map-marker-alt text-danger me-1"></i> ${settings.lokasi}`;
+            if (heroBadges.length >= 2) {
+                const lokasiText = (settings && settings.lokasi && settings.lokasi !== "Sumatera Utara" && settings.lokasi !== "Kota Medan, SUMUT") 
+                    ? settings.lokasi 
+                    : "Lt. 10 Kantor Bank Sumut, Jl. Imam Bonjol, Medan";
+                heroBadges[1].innerHTML = `<i class="fas fa-map-marker-alt text-danger me-1"></i> ${lokasiText}`;
             }
         }
 
