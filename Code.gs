@@ -514,9 +514,19 @@ function handleRegistrasiHariH(data) {
   
   var targetPeserta = null;
   var targetRow = -1;
+  var query = (data.id_peserta || "").toString().toLowerCase().trim();
+  
+  if (!query) {
+    return { success: false, message: "Harap masukkan 4 digit ID Peserta, Nama UMKM, atau ID Lengkap!" };
+  }
   
   for (var i = 1; i < rowsPes.length; i++) {
-    if (rowsPes[i][0] === data.id_peserta) {
+    var fullId = (rowsPes[i][0] || "").toString().toLowerCase();
+    var umkm = (rowsPes[i][2] || "").toString().toLowerCase();
+    var pemilik = (rowsPes[i][3] || "").toString().toLowerCase();
+    
+    // Match by exact ID, ending 4 digits, UMKM name, or Owner name
+    if (fullId === query || fullId.endsWith(query) || (query.length >= 3 && (umkm.indexOf(query) !== -1 || pemilik.indexOf(query) !== -1))) {
       targetRow = i + 1;
       targetPeserta = rowsPes[i];
       break;
@@ -524,20 +534,21 @@ function handleRegistrasiHariH(data) {
   }
   
   if (!targetPeserta) {
-    return { success: false, message: "ID Peserta '" + data.id_peserta + "' tidak ditemukan atau belum disetujui (ACC)." };
+    return { success: false, message: "Peserta dengan pencarian '" + data.id_peserta + "' tidak ditemukan atau belum disetujui (ACC)." };
   }
   
   if (targetPeserta[6] === "Sudah Registrasi") {
-    return { success: false, message: "Peserta ini SUDAH melakukan registrasi kehadiran sebelumnya!" };
+    return { success: false, message: "Peserta '" + targetPeserta[3] + " (" + targetPeserta[2] + ")' SUDAH dicatat hadir sebelumnya!" };
   }
   
-  // Update status peserta
+  // Update status peserta di Sheet Peserta
   sheetPes.getRange(targetRow, 7).setValue("Sudah Registrasi");
   
-  // Catat di Sheet Registrasi
+  // Catat di Sheet Registrasi dengan ID Ringkas HDR-2026-XXXX
   var sheetReg = ss.getSheetByName("Registrasi");
   var nowStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm:ss");
-  var idReg = "REG-HADIR-" + new Date().getTime();
+  var randomDigits = Math.floor(1000 + Math.random() * 9000);
+  var idReg = "HDR-2026-" + randomDigits;
   
   sheetReg.appendRow([
     idReg,
@@ -548,7 +559,11 @@ function handleRegistrasiHariH(data) {
     data.admin_user || "Admin"
   ]);
   
-  return { success: true, message: "Kehadiran atas nama " + targetPeserta[3] + " (" + targetPeserta[2] + ") berhasil dicatat!" };
+  return { 
+    success: true, 
+    message: "Kehadiran atas nama " + targetPeserta[3] + " (" + targetPeserta[2] + " - " + targetPeserta[0] + ") BERHASIL dicatat!",
+    data: { id_registrasi: idReg, id_peserta: targetPeserta[0], nama_umkm: targetPeserta[2], nama_pemilik: targetPeserta[3] }
+  };
 }
 
 

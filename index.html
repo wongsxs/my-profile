@@ -649,15 +649,23 @@
                 <h2 class="fw-bold mb-4"><i class="fas fa-calendar-check me-2 text-primary"></i>Registrasi Ulang (Hari H)</h2>
                 
                 <div class="row mb-4">
-                    <div class="col-md-6">
-                        <div class="card shadow-sm border-0">
-                            <div class="card-body">
-                                <h5>Input ID Peserta</h5>
-                                <div class="input-group">
-                                    <input type="text" id="input-id-peserta" class="form-control" placeholder="Contoh: PST-2026... ">
-                                    <button class="btn btn-primary" onclick="prosesRegistrasiManual()">Proses Registrasi</button>
+                    <div class="col-md-7">
+                        <div class="card shadow-sm border-0 bg-white p-4 rounded-3">
+                            <h5 class="fw-bold text-primary mb-3"><i class="fas fa-barcode me-2"></i>Pencatatan Kehadiran Peserta</h5>
+                            <form onsubmit="prosesRegistrasiManual(event)">
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Cukup Masukkan 4 Digit Belakang ID Peserta / Nama UMKM</label>
+                                    <div class="input-group input-group-lg">
+                                        <input type="text" id="input-id-peserta" class="form-control" placeholder="Ketik 4 Digit Belakang (contoh: 7634) atau Nama..." autocomplete="off" onkeyup="handleSearchPesertaLive(this.value)">
+                                        <button type="submit" class="btn btn-primary px-4 fw-bold">
+                                            <i class="fas fa-check-circle me-1"></i> Catat Hadir
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                                <div id="live-peserta-preview" class="p-3 bg-light rounded-3 d-none border">
+                                    <!-- Injected via JS -->
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -1346,12 +1354,55 @@
             }
         }
 
-        async function prosesRegistrasiManual() {
+        function handleSearchPesertaLive(val) {
+            const previewEl = document.getElementById('live-peserta-preview');
+            if (!previewEl) return;
+
+            const query = (val || '').trim().toLowerCase();
+            if (!query || query.length < 2) {
+                previewEl.classList.add('d-none');
+                previewEl.innerHTML = '';
+                return;
+            }
+
+            // Cari peserta di cache
+            const match = currentPesertaData.find(p => {
+                const fullId = (p.id_peserta || '').toLowerCase();
+                const umkm = (p.nama_umkm || '').toLowerCase();
+                const pemilik = (p.nama_pemilik || '').toLowerCase();
+
+                return fullId.endsWith(query) || fullId === query || umkm.includes(query) || pemilik.includes(query);
+            });
+
+            if (match) {
+                const regStatusBadge = match.status_registrasi === 'Sudah Registrasi' 
+                    ? '<span class="badge bg-success">Sudah Hadir</span>' 
+                    : '<span class="badge bg-warning text-dark">Belum Hadir</span>';
+
+                previewEl.innerHTML = `
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="fw-bold text-primary"><i class="fas fa-id-card me-1"></i>${match.id_peserta}</div>
+                            <div class="fw-semibold text-dark">${match.nama_umkm} (${match.nama_pemilik})</div>
+                            <small class="text-muted"><i class="fab fa-whatsapp me-1 text-success"></i>${match.no_hp || '-'}</small>
+                        </div>
+                        <div>${regStatusBadge}</div>
+                    </div>
+                `;
+                previewEl.classList.remove('d-none');
+            } else {
+                previewEl.innerHTML = `<small class="text-muted"><i class="fas fa-search me-1"></i>Mencari peserta dengan kata kunci "${val}"...</small>`;
+                previewEl.classList.remove('d-none');
+            }
+        }
+
+        async function prosesRegistrasiManual(e) {
+            if (e) e.preventDefault();
             const idInput = document.getElementById('input-id-peserta');
             const idPeserta = idInput.value.trim();
 
             if (!idPeserta) {
-                Swal.fire('Error', 'Harap masukkan ID Peserta!', 'warning');
+                Swal.fire('Peringatan', 'Harap masukkan 4 digit ID Peserta, Nama UMKM, atau ID Lengkap!', 'warning');
                 return;
             }
 
@@ -1359,13 +1410,24 @@
             try {
                 const payload = {
                     id_peserta: idPeserta,
-                    admin_user: currentUser.username
+                    admin_user: currentUser ? (currentUser.name || currentUser.username) : "Admin"
                 };
                 const res = await apiCall('POST', 'registrasi', payload);
                 hideLoader();
-                Swal.fire('Berhasil!', res.message, 'success').then(() => {
+                
+                Swal.fire({
+                    title: 'BERHASIL HADIR! 🎉',
+                    html: `<b>${res.message}</b>`,
+                    icon: 'success',
+                    timer: 2500,
+                    showConfirmButton: true
+                }).then(() => {
                     idInput.value = '';
+                    const previewEl = document.getElementById('live-peserta-preview');
+                    if (previewEl) previewEl.classList.add('d-none');
+                    idInput.focus();
                     loadDataRegistrasi(); // Refresh tabel kehadiran
+                    loadDataPeserta(); // Refresh status di daftar peserta
                 });
             } catch (err) {
                 hideLoader();
