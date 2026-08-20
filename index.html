@@ -240,11 +240,19 @@
                             <div class="card border-0 shadow-sm rounded-3 p-4 h-100 bg-white text-start">
                                 <div class="badge bg-primary rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; font-size: 1.2rem;">1</div>
                                 <h5 class="fw-bold text-center">Isi Formulir</h5>
-                                <p class="text-muted small mb-0">
-                                    <strong>Syarat Pendaftaran UMKM:</strong><br>
-                                    1. Membuka rekening Bank Sumut dgn setoran awal 100rb dan dikirimkan ke rekening panitia.<br>
-                                    2. Memiliki NIB, foto produk, & alamat usaha di Sumatera Utara.
-                                </p>
+                                <div class="text-muted small mb-0">
+                                    <strong>Syarat Pendaftaran UMKM:</strong>
+                                    <ol class="ps-3 mb-0 mt-1">
+                                        <li>Membuka rekening Bank Sumut dgn setoran awal 100rb dikirim ke Rekening Panitia:
+                                            <div class="p-2 bg-light rounded border mt-1 text-dark">
+                                                <strong>Bank Sumut</strong><br>
+                                                <code class="fs-6 text-primary fw-bold">10102040210500</code><br>
+                                                <small class="text-muted">A/n Pelatihan UMKM Tahun 2026</small>
+                                            </div>
+                                        </li>
+                                        <li class="mt-2">Memiliki NIB, foto produk, & alamat usaha di Sumatera Utara.</li>
+                                    </ol>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-3 col-sm-6">
@@ -323,7 +331,21 @@
                             <div class="card-header bg-white border-0 pt-4 pb-0 text-center">
                                 <img src="assets/logo-gamki.png" alt="Logo GAMKI" style="height: 55px; width: auto;" class="mb-2">
                                 <h3 class="fw-bold text-primary">Formulir Pendaftaran UMKM</h3>
-                                <p class="text-muted">Harap isi data dengan lengkap dan benar.</p>
+                                <p class="text-muted mb-3">Harap isi data dengan lengkap dan benar.</p>
+                                
+                                <!-- Info Transfer Rekening Panitia -->
+                                <div class="alert alert-info border-0 shadow-sm rounded-3 p-3 mb-3 text-start mx-auto" style="max-width: 650px;">
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3 text-primary"><i class="fas fa-university fa-2x"></i></div>
+                                        <div>
+                                            <div class="fw-bold text-primary mb-1">Rekening Transfer Setoran Awal Panitia:</div>
+                                            <div class="small text-dark">
+                                                <strong>Bank Sumut</strong> | No. Rek: <code class="fs-6 text-primary fw-bold bg-white px-2 py-1 rounded border">10102040210500</code><br>
+                                                A/n: <strong>Pelatihan UMKM Tahun 2026</strong> (Setoran Awal Rp 100.000)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="card-body p-4">
                                 <form id="form-pendaftaran" onsubmit="handlePendaftaran(event)">
