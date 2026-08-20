@@ -403,12 +403,13 @@ function handleTolak(data) {
     return { success: false, message: "ID Pendaftaran tidak ditemukan." };
   }
   
-  sheetPend.getRange(targetRow, 24).setValue("Ditolak");
+  var alasanText = data.alasan || "Berkas pendaftaran belum memenuhi kriteria.";
+  sheetPend.getRange(targetRow, 24).setValue("Ditolak: " + alasanText);
   
-  // Kirim Email DITOLAK
-  sendEmailDitolak(pendaftaranObj[10], pendaftaranObj[7], pendaftaranObj[2], pendaftaranObj[0]);
+  // Kirim Email DITOLAK beserta Alasan & Petunjuk Daftar Ulang
+  sendEmailDitolak(pendaftaranObj[10], pendaftaranObj[7], pendaftaranObj[2], pendaftaranObj[0], alasanText);
   
-  return { success: true, message: "Pendaftaran telah DITOLAK & Email Notifikasi telah terkirim." };
+  return { success: true, message: "Pendaftaran telah DITOLAK & Email Alasan Penolakan telah terkirim." };
 }
 
 
@@ -501,10 +502,10 @@ function sendEmailDiterima(email, namaPemilik, namaUmkm, idPendaftaran, idPesert
   }
 }
 
-function sendEmailDitolak(email, namaPemilik, namaUmkm, idPendaftaran) {
+function sendEmailDitolak(email, namaPemilik, namaUmkm, idPendaftaran, alasan) {
   if (!email || email.indexOf("@") === -1) return;
   
-  var subject = "[GAMKI SUMUT 2026] Informasi Pendaftaran Pelatihan UMKM";
+  var subject = "[GAMKI SUMUT 2026] Informasi Pendaftaran Pelatihan UMKM (" + idPendaftaran + ")";
   var htmlBody = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
       <div style="background-color: #0f2b5c; color: #ffffff; padding: 20px; text-align: center;">
@@ -513,11 +514,19 @@ function sendEmailDitolak(email, namaPemilik, namaUmkm, idPendaftaran) {
       </div>
       <div style="padding: 25px; color: #1e293b; line-height: 1.6;">
         <h3 style="color: #0f2b5c; margin-top:0;">Halo, ${namaPemilik}!</h3>
-        <p>Terima kasih atas antusiasme Anda mendaftarkan usaha <strong>${namaUmkm}</strong> (ID: <code>${idPendaftaran}</code>) pada kegiatan Pelatihan UMKM GAMKI SUMUT 2026.</p>
+        <p>Terima kasih atas antusiasme Anda mendaftarkan usaha <strong>${namaUmkm}</strong> (ID Pendaftaran: <code>${idPendaftaran}</code>) pada kegiatan Pelatihan UMKM GAMKI SUMUT 2026.</p>
         
-        <p>Setelah dilakukan proses peninjauan berkas oleh panitia, kami menginformasikan bahwa pendaftaran Anda <strong>belum dapat disetujui</strong> pada gelombang kali ini karena keterbatasan kuota.</p>
+        <p>Setelah dilakukan proses peninjauan berkas oleh panitia, kami menginformasikan bahwa pendaftaran Anda <strong>belum dapat disetujui</strong> saat ini.</p>
+
+        <div style="background-color: #fef2f2; border-left: 4px solid #ef4444; padding: 15px; margin: 20px 0; border-radius: 4px;">
+          <p style="margin: 0 0 5px 0; color: #991b1b; font-weight: bold;">Catatan / Alasan Penolakan dari Panitia:</p>
+          <p style="margin: 0; font-style: italic; color: #7f1d1d;">"${alasan || 'Berkas belum memenuhi kriteria panitia.'}"</p>
+        </div>
         
-        <p>Tetap semangat dan nantikan program pembinaan UMKM GAMKI selanjutnya!</p>
+        <div style="background-color: #f1f5f9; padding: 15px; border-radius: 4px; font-size: 14px;">
+          <p style="margin: 0 0 5px 0; font-weight: bold; color: #0f2b5c;">📌 Petunjuk Pendaftaran Ulang:</p>
+          <p style="margin: 0;">Apabila penolakan disebabkan oleh berkas/foto yang kurang jelas atau data yang perlu diperbaiki, Anda diperbolehkan untuk <strong>melakukan pendaftaran ulang</strong> dengan melengkapi data yang benar melalui website resmi: <a href="https://gamkisumut.my.id" style="color: #0f2b5c; font-weight: bold;">gamkisumut.my.id</a>.</p>
+        </div>
         
         <p style="margin-top: 30px;">Salam hangat,<br><strong>Panitia Pelatihan UMKM GAMKI SUMUT 2026</strong></p>
       </div>
@@ -530,7 +539,7 @@ function sendEmailDitolak(email, namaPemilik, namaUmkm, idPendaftaran) {
   try {
     MailApp.sendEmail({ to: email, subject: subject, htmlBody: htmlBody });
   } catch(e) {
-    Logger.log("Gagal kirim email: " + e.toString());
+    Logger.log("Gagal kirim email Ditolak: " + e.toString());
   }
 }
 

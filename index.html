@@ -1035,30 +1035,74 @@
         }
 
         async function prosesVerifikasi(idPendaftaran, actionType) {
-            const actionWord = actionType === 'terima' ? 'Menerima' : 'Menolak';
-            
+            if (actionType === 'tolak') {
+                const { value: alasan } = await Swal.fire({
+                    title: 'Alasan Penolakan',
+                    text: 'Harap isi alasan penolakan (akan dikirimkan langsung ke email pendaftar):',
+                    input: 'textarea',
+                    inputPlaceholder: 'Contoh: Foto produk kurang jelas / Berkas NIB tidak sesuai...',
+                    inputAttributes: {
+                        'aria-label': 'Alasan penolakan'
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: 'Kirim Penolakan',
+                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#dc3545',
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'Alasan penolakan wajib diisi agar pendaftar tahu!'
+                        }
+                    }
+                });
+
+                if (!alasan) return;
+
+                const modalEl = document.getElementById('modalDetail');
+                const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                if (modalInstance) modalInstance.hide();
+
+                showLoader(`Memproses penolakan & mengirim email...`);
+                try {
+                    const payload = {
+                        id_pendaftaran: idPendaftaran,
+                        admin_user: currentUser.username,
+                        alasan: alasan
+                    };
+                    const res = await apiCall('POST', 'tolak', payload);
+                    hideLoader();
+                    Swal.fire('Berhasil Ditolak!', res.message, 'success').then(() => {
+                        loadDataPendaftaran();
+                    });
+                } catch (err) {
+                    hideLoader();
+                }
+                return;
+            }
+
+            // Jika Terima (ACC)
             Swal.fire({
-                title: `Yakin ingin ${actionWord}?`,
-                text: actionType === 'terima' ? "Data akan masuk ke tabel Peserta dan email akan dikirim." : "Data pendaftaran akan ditolak.",
+                title: `Yakin ingin Menerima Pendaftaran Ini?`,
+                text: "ID Peserta Resmi akan diterbitkan dan Email Notifikasi Kelulusan akan dikirimkan.",
                 icon: 'question',
                 showCancelButton: true,
-                confirmButtonColor: actionType === 'terima' ? '#198754' : '#dc3545',
-                confirmButtonText: 'Ya, Proses!'
+                confirmButtonColor: '#198754',
+                confirmButtonText: 'Ya, Terima (ACC)'
             }).then(async (result) => {
                 if (result.isConfirmed) {
-                    // Close modal first
-                    bootstrap.Modal.getInstance(document.getElementById('modalDetail')).hide();
-                    
-                    showLoader(`Memproses penolakan/penerimaan...`);
+                    const modalEl = document.getElementById('modalDetail');
+                    const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                    if (modalInstance) modalInstance.hide();
+
+                    showLoader(`Memproses penerimaan & menerbitkan ID Peserta...`);
                     try {
                         const payload = {
                             id_pendaftaran: idPendaftaran,
                             admin_user: currentUser.username
                         };
-                        const res = await apiCall('POST', actionType, payload);
+                        const res = await apiCall('POST', 'terima', payload);
                         hideLoader();
-                        Swal.fire('Berhasil!', res.message, 'success').then(() => {
-                            loadDataPendaftaran(); // Refresh table
+                        Swal.fire('Berhasil Diterima!', res.message, 'success').then(() => {
+                            loadDataPendaftaran();
                         });
                     } catch (err) {
                         hideLoader();
