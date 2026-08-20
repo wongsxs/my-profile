@@ -1195,6 +1195,11 @@
         }
 
         async function prosesVerifikasi(idPendaftaran, actionType) {
+            // Sembunyikan modal detail lebih dulu agar focus trap Bootstrap terlepas
+            const modalEl = document.getElementById('modalDetail');
+            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+            if (modalInstance) modalInstance.hide();
+
             if (actionType === 'tolak') {
                 const { value: alasan } = await Swal.fire({
                     title: 'Alasan Penolakan',
@@ -1216,10 +1221,6 @@
                 });
 
                 if (!alasan) return;
-
-                const modalEl = document.getElementById('modalDetail');
-                const modalInstance = bootstrap.Modal.getInstance(modalEl);
-                if (modalInstance) modalInstance.hide();
 
                 showLoader(`Memproses penolakan & mengirim email...`);
                 try {
