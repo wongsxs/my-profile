@@ -1585,10 +1585,22 @@
             document.body.removeChild(link);
         }
 
-        function exportPesertaExcel() {
+        async function exportPesertaExcel() {
             if (!currentPesertaData || currentPesertaData.length === 0) {
                 Swal.fire('Data Kosong', 'Belum ada data peserta resmi yang disetujui.', 'warning');
                 return;
+            }
+
+            // Pastikan data detail pendaftaran juga terisi lengkap
+            if (!currentPendaftaranData || currentPendaftaranData.length === 0) {
+                showLoader("Menyiapkan Data Lengkap Peserta...");
+                try {
+                    const res = await apiCall('GET', 'getPendaftaran');
+                    currentPendaftaranData = res.data;
+                    hideLoader();
+                } catch(e) {
+                    hideLoader();
+                }
             }
 
             let excelHtml = `
@@ -1624,28 +1636,75 @@
                                 <th>No Pendaftaran Asal</th>
                                 <th>Tanggal ACC</th>
                                 <th>Nama UMKM</th>
+                                <th>Bidang Usaha</th>
+                                <th>Produk Utama</th>
+                                <th>Legalitas</th>
+                                <th>Alamat Usaha</th>
                                 <th>Nama Pemilik</th>
-                                <th>No WA / HP</th>
+                                <th>Jabatan</th>
+                                <th>No WA</th>
                                 <th>Email</th>
-                                <th>Status Kehadiran (Hari H)</th>
+                                <th>Status NIB</th>
+                                <th>No NIB</th>
+                                <th>Status NPWP</th>
+                                <th>No NPWP</th>
+                                <th>Status PIRT</th>
+                                <th>No PIRT</th>
+                                <th>Status Merk</th>
+                                <th>No Merk</th>
+                                <th>Status Halal</th>
+                                <th>No Halal</th>
+                                <th>Ekspor</th>
+                                <th>Status Kehadiran Hari H</th>
                             </tr>
                         </thead>
                         <tbody>
             `;
 
-            currentPesertaData.forEach(d => {
-                const cleanHp = d.no_hp ? d.no_hp.toString().replace(/^'/, '') : '-';
+            currentPesertaData.forEach(p => {
+                const detail = currentPendaftaranData.find(d => d.id_pendaftaran === p.id_pendaftaran) || {};
+
+                const cleanHp = (p.no_hp || detail.no_hp || '').toString().replace(/^'/, '');
+                const cleanNib = (detail.nomor_nib || '').toString().replace(/^'/, '');
+                const cleanNpwp = (detail.nomor_npwp || '').toString().replace(/^'/, '');
+                const cleanPirt = (detail.nomor_pirt || '').toString().replace(/^'/, '');
+                const cleanMerk = (detail.nomor_merk || '').toString().replace(/^'/, '');
+                const cleanHalal = (detail.nomor_halal || '').toString().replace(/^'/, '');
+
+                let dateAccFormatted = '-';
+                if (p.tanggal_acc) {
+                    let s = p.tanggal_acc.toString().replace('T', ' ').replace('Z', '').substring(0, 10);
+                    const parts = s.split('-');
+                    if (parts.length === 3) dateAccFormatted = `${parts[2]}/${parts[1]}/${parts[0]}`;
+                    else dateAccFormatted = s;
+                }
 
                 excelHtml += `
                     <tr>
-                        <td class="text-cell" style="text-align:center; font-weight:bold; color:#0f2b5c;">${d.id_peserta || ''}</td>
-                        <td class="text-cell" style="text-align:center;">${d.id_pendaftaran || ''}</td>
-                        <td class="text-cell" style="text-align:center;">${d.timestamp_acc ? d.timestamp_acc.substring(0, 10) : '-'}</td>
-                        <td>${d.nama_umkm || ''}</td>
-                        <td>${d.nama_pemilik || ''}</td>
+                        <td class="text-cell" style="text-align:center; font-weight:bold; color:#0f2b5c;">${p.id_peserta || ''}</td>
+                        <td class="text-cell" style="text-align:center;">${p.id_pendaftaran || ''}</td>
+                        <td class="text-cell" style="text-align:center;">${dateAccFormatted}</td>
+                        <td>${p.nama_umkm || detail.nama_umkm || ''}</td>
+                        <td>${detail.bidang_usaha || ''}</td>
+                        <td>${detail.nama_produk || ''}</td>
+                        <td>${detail.legalitas || ''}</td>
+                        <td>${detail.alamat || ''}</td>
+                        <td>${p.nama_pemilik || detail.nama_pemilik || ''}</td>
+                        <td>${detail.jabatan || ''}</td>
                         <td class="text-cell">${cleanHp}</td>
-                        <td>${d.email || ''}</td>
-                        <td style="font-weight:bold;">${d.status_registrasi || 'Belum Hadir'}</td>
+                        <td>${p.email || detail.email || ''}</td>
+                        <td>${detail.status_nib || ''}</td>
+                        <td class="text-cell">${cleanNib}</td>
+                        <td>${detail.status_npwp || ''}</td>
+                        <td class="text-cell">${cleanNpwp}</td>
+                        <td>${detail.status_pirt || ''}</td>
+                        <td class="text-cell">${cleanPirt}</td>
+                        <td>${detail.status_merk || ''}</td>
+                        <td class="text-cell">${cleanMerk}</td>
+                        <td>${detail.status_halal || ''}</td>
+                        <td class="text-cell">${cleanHalal}</td>
+                        <td>${detail.kegiatan_export || ''}</td>
+                        <td style="font-weight:bold;">${p.status_registrasi || 'Belum Registrasi'}</td>
                     </tr>
                 `;
             });
@@ -1667,10 +1726,22 @@
             document.body.removeChild(link);
         }
 
-        function exportRegistrasiExcel() {
+        async function exportRegistrasiExcel() {
             if (!currentRegistrasiData || currentRegistrasiData.length === 0) {
                 Swal.fire('Data Kosong', 'Belum ada data registrasi kehadiran di hari H.', 'warning');
                 return;
+            }
+
+            // Pastikan data detail pendaftaran juga terisi lengkap
+            if (!currentPendaftaranData || currentPendaftaranData.length === 0) {
+                showLoader("Menyiapkan Data Kehadiran...");
+                try {
+                    const res = await apiCall('GET', 'getPendaftaran');
+                    currentPendaftaranData = res.data;
+                    hideLoader();
+                } catch(e) {
+                    hideLoader();
+                }
             }
 
             let excelHtml = `
@@ -1706,22 +1777,35 @@
                                 <th>Waktu Kedatangan</th>
                                 <th>ID Peserta</th>
                                 <th>Nama UMKM</th>
+                                <th>Bidang Usaha</th>
+                                <th>Produk Utama</th>
                                 <th>Nama Pemilik</th>
+                                <th>No WA</th>
+                                <th>Email</th>
+                                <th>Alamat Usaha</th>
                                 <th>Admin Pencatat</th>
                             </tr>
                         </thead>
                         <tbody>
             `;
 
-            currentRegistrasiData.forEach(d => {
+            currentRegistrasiData.forEach(r => {
+                const detail = currentPendaftaranData.find(d => d.nama_umkm === r.nama_umkm || d.nama_pemilik === r.nama_pemilik) || {};
+                const cleanHp = (detail.no_hp || '').toString().replace(/^'/, '');
+
                 excelHtml += `
                     <tr>
-                        <td class="text-cell" style="text-align:center; font-weight:bold;">${d.id_registrasi || ''}</td>
-                        <td class="text-cell" style="text-align:center;">${d.timestamp_registrasi || ''}</td>
-                        <td class="text-cell" style="text-align:center; font-weight:bold; color:#0f2b5c;">${d.id_peserta || ''}</td>
-                        <td>${d.nama_umkm || ''}</td>
-                        <td>${d.nama_pemilik || ''}</td>
-                        <td>${d.admin_user || 'Admin'}</td>
+                        <td class="text-cell" style="text-align:center; font-weight:bold;">${r.id_registrasi || ''}</td>
+                        <td class="text-cell" style="text-align:center;">${r.timestamp_registrasi || ''}</td>
+                        <td class="text-cell" style="text-align:center; font-weight:bold; color:#0f2b5c;">${r.id_peserta || ''}</td>
+                        <td>${r.nama_umkm || ''}</td>
+                        <td>${detail.bidang_usaha || ''}</td>
+                        <td>${detail.nama_produk || ''}</td>
+                        <td>${r.nama_pemilik || ''}</td>
+                        <td class="text-cell">${cleanHp}</td>
+                        <td>${detail.email || ''}</td>
+                        <td>${detail.alamat || ''}</td>
+                        <td>${r.admin_user || 'Admin'}</td>
                     </tr>
                 `;
             });
