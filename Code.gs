@@ -588,12 +588,16 @@ function sendEmailDiterima(email, namaPemilik, namaUmkm, idPendaftaran, idPesert
         
         <div style="background-color: #f1f5f9; border-left: 4px solid #d97706; padding: 15px; margin: 20px 0; border-radius: 4px;">
           <p style="margin: 0 0 5px 0;"><strong>ID Pendaftaran:</strong> ${idPendaftaran}</p>
-          <p style="margin: 0;"><strong>ID Peserta Resmi:</strong> <span style="font-size: 18px; color: #0f2b5c; font-weight: bold;">${idPeserta}</span></p>
+          <p style="margin: 0 0 10px 0;"><strong>ID Peserta Resmi:</strong> <span style="font-size: 18px; color: #0f2b5c; font-weight: bold;">${idPeserta}</span></p>
+          <hr style="border: 0; border-top: 1px solid #cbd5e1; margin: 10px 0;">
+          <p style="margin: 0 0 5px 0;">📅 <strong>Tanggal Pelaksanaan:</strong> 25 September 2026</p>
+          <p style="margin: 0;">📍 <strong>Lokasi Acara:</strong> Lantai 10 Kantor Bank Sumut, Jl. Imam Bonjol, Medan</p>
         </div>
         
         <p><strong>Petunjuk Penting:</strong></p>
         <ul style="padding-left: 20px;">
           <li>Simpan Kode <strong>ID Peserta Resmi (${idPeserta})</strong> ini untuk dipakai saat Registrasi Kehadiran di lokasi acara pada Hari H.</li>
+          <li>Hadir di lokasi kegiatan pada tanggal <strong>25 September 2026</strong> tepat waktu.</li>
           <li>Panitia akan segera mengontak WhatsApp Anda untuk pembagian grup dan jadwal detail kegiatan.</li>
         </ul>
         
@@ -732,8 +736,8 @@ function getGlobalSettings() {
   return {
     status: "buka",
     wa: "6281234567890",
-    lokasi: "Kota Medan, SUMUT",
-    biaya: "Gratis & Bersertifikat"
+    lokasi: "Lt. 10 Kantor Bank Sumut, Jl. Imam Bonjol, Medan",
+    biaya: ""
   };
 }
 
@@ -741,8 +745,8 @@ function handleSaveSettings(payload) {
   var settings = {
     status: payload.status || "buka",
     wa: payload.wa || "",
-    lokasi: payload.lokasi || "Kota Medan, SUMUT",
-    biaya: payload.biaya || "Gratis & Bersertifikat"
+    lokasi: payload.lokasi || "Lt. 10 Kantor Bank Sumut, Jl. Imam Bonjol, Medan",
+    biaya: payload.biaya || ""
   };
   
   PropertiesService.getScriptProperties().setProperty("GLOBAL_PORTAL_SETTINGS", JSON.stringify(settings));
