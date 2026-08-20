@@ -155,9 +155,12 @@ function handleDaftar(data) {
     "Menunggu Verifikasi"
   ]);
   
+  // Kirim Email Konfirmasi Pendaftaran Diterima Sistem (Otomatis)
+  sendEmailKonfirmasiPendaftaran(data.email, data.nama_pemilik, data.nama_umkm, idPendaftaran);
+  
   return {
     success: true,
-    message: "Pendaftaran berhasil dikirim!",
+    message: "Pendaftaran berhasil dikirim! Email konfirmasi telah dikirim ke " + (data.email || "email Anda"),
     data: { id_pendaftaran: idPendaftaran }
   };
 }
@@ -485,5 +488,42 @@ function sendEmailDitolak(email, namaPemilik, namaUmkm, idPendaftaran) {
     MailApp.sendEmail({ to: email, subject: subject, htmlBody: htmlBody });
   } catch(e) {
     Logger.log("Gagal kirim email: " + e.toString());
+  }
+}
+
+function sendEmailKonfirmasiPendaftaran(email, namaPemilik, namaUmkm, idPendaftaran) {
+  if (!email || email.indexOf("@") === -1) return;
+  
+  var subject = "[GAMKI SUMUT 2026] Konfirmasi Pendaftaran Pelatihan UMKM (" + idPendaftaran + ")";
+  var htmlBody = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+      <div style="background-color: #0f2b5c; color: #ffffff; padding: 20px; text-align: center;">
+        <h2 style="margin: 0; font-size: 20px; font-weight: bold;">DPD GAMKI SUMATERA UTARA</h2>
+        <p style="margin: 5px 0 0 0; font-size: 13px; opacity: 0.9;">Pelatihan & Pameran UMKM 2026</p>
+      </div>
+      <div style="padding: 25px; color: #1e293b; line-height: 1.6;">
+        <h3 style="color: #0f2b5c; margin-top:0;">Halo, ${namaPemilik}!</h3>
+        <p>Terima kasih telah mendaftarkan usaha <strong>${namaUmkm}</strong> pada kegiatan Pelatihan UMKM GAMKI SUMUT 2026.</p>
+        
+        <div style="background-color: #f1f5f9; border-left: 4px solid #0f2b5c; padding: 15px; margin: 20px 0; border-radius: 4px;">
+          <p style="margin: 0 0 5px 0;"><strong>ID Pendaftaran Anda:</strong> <span style="font-size: 16px; color: #0f2b5c; font-weight: bold;">${idPendaftaran}</span></p>
+          <p style="margin: 0; font-size: 13px; color: #64748b;">Status Berkas: <span style="color: #d97706; font-weight: bold;">Menunggu Verifikasi Panitia</span></p>
+        </div>
+        
+        <p>Berkas pendaftaran dan foto produk Anda telah berhasil diterima oleh sistem database kami. Panitia akan segera melakukan verifikasi kelengkapan berkas Anda.</p>
+        <p>Setelah proses verifikasi selesai, Anda akan menerima email notifikasi kelulusan resmi beserta ID Peserta.</p>
+        
+        <p style="margin-top: 30px;">Salam hangat,<br><strong>Panitia Pelatihan UMKM GAMKI SUMUT 2026</strong></p>
+      </div>
+      <div style="background-color: #f8fafc; border-top: 1px solid #e2e8f0; padding: 12px; text-align: center; font-size: 12px; color: #64748b;">
+        Email ini dikirimkan secara otomatis oleh Sistem Portal GAMKI SUMUT 2026.
+      </div>
+    </div>
+  `;
+  
+  try {
+    MailApp.sendEmail({ to: email, subject: subject, htmlBody: htmlBody });
+  } catch(e) {
+    Logger.log("Gagal kirim email konfirmasi: " + e.toString());
   }
 }
