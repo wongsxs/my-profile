@@ -1133,6 +1133,14 @@
             return url;
         }
 
+        function formatLegalitasItem(title, status, nomor) {
+            const isAda = status === 'Ada';
+            const icon = isAda ? '<i class="fas fa-check-circle text-success me-1"></i>' : '<i class="fas fa-times-circle text-muted me-1"></i>';
+            const nomorText = (isAda && nomor && nomor !== '-') ? ` <span class="fw-bold text-dark">(${nomor})</span>` : '';
+            const statusText = isAda ? `<span class="badge bg-success">Ada</span>` : `<span class="text-muted">Belum Memiliki</span>`;
+            return `<li>${icon} <b>${title}:</b> ${statusText}${nomorText}</li>`;
+        }
+
         function lihatDetailPendaftaran(id) {
             const data = currentPendaftaranData.find(d => d.id_pendaftaran === id);
             if (!data) return;
@@ -1161,20 +1169,20 @@
                     </div>
                 </div>
                 <hr>
-                <h6 class="fw-bold">Data Legalitas:</h6>
-                <div class="row text-muted text-sm">
+                <h6 class="fw-bold mb-3">Data Perizinan & Sertifikasi Legalitas:</h6>
+                <div class="row text-sm">
                     <div class="col-md-6">
                         <ul class="list-unstyled">
-                            <li><i class="fas fa-check-circle text-success me-1"></i> <b>NIB:</b> ${data.status_nib} (${data.nomor_nib})</li>
-                            <li><i class="fas fa-check-circle text-success me-1"></i> <b>NPWP:</b> ${data.status_npwp} (${data.nomor_npwp})</li>
-                            <li><i class="fas fa-check-circle text-success me-1"></i> <b>PIRT:</b> ${data.status_pirt} (${data.nomor_pirt})</li>
+                            ${formatLegalitasItem('NIB', data.status_nib, data.nomor_nib)}
+                            ${formatLegalitasItem('NPWP', data.status_npwp, data.nomor_npwp)}
+                            ${formatLegalitasItem('PIRT', data.status_pirt, data.nomor_pirt)}
                         </ul>
                     </div>
                     <div class="col-md-6">
                          <ul class="list-unstyled">
-                            <li><i class="fas fa-check-circle text-success me-1"></i> <b>Merk:</b> ${data.status_merk} (${data.nomor_merk})</li>
-                            <li><i class="fas fa-check-circle text-success me-1"></i> <b>Halal:</b> ${data.status_halal} (${data.nomor_halal})</li>
-                            <li><i class="fas fa-globe text-primary me-1"></i> <b>Ekspor:</b> ${data.kegiatan_export}</li>
+                            ${formatLegalitasItem('Merk', data.status_merk, data.nomor_merk)}
+                            ${formatLegalitasItem('Halal', data.status_halal, data.nomor_halal)}
+                            <li><i class="fas fa-globe text-primary me-1"></i> <b>Kegiatan Ekspor:</b> <span class="fw-semibold">${data.kegiatan_export || 'Belum Pernah'}</span></li>
                         </ul>
                     </div>
                 </div>
