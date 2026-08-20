@@ -19,6 +19,8 @@ function doGet(e) {
       response = { success: true, data: getPesertaData() };
     } else if (action === "getRegistrasi") {
       response = { success: true, data: getRegistrasiData() };
+    } else if (action === "getSettings") {
+      response = { success: true, data: getGlobalSettings() };
     } else {
       response = { success: false, message: "Action GET tidak dikenal: " + action };
     }
@@ -47,6 +49,8 @@ function doPost(e) {
       response = handleTolak(payload);
     } else if (action === "registrasi") {
       response = handleRegistrasiHariH(payload);
+    } else if (action === "saveSettings") {
+      response = handleSaveSettings(payload);
     } else {
       response = { success: false, message: "Action POST tidak dikenal: " + action };
     }
@@ -712,4 +716,40 @@ function generateUniqueId(sheetName, prefix) {
   }
   
   return newId;
+}
+
+/**
+ * PENGATURAN SYSTEM PORTAL GLOBAL (PERSISTEN DI CLOUD SERVER)
+ */
+function getGlobalSettings() {
+  var props = PropertiesService.getScriptProperties();
+  var saved = props.getProperty("GLOBAL_PORTAL_SETTINGS");
+  if (saved) {
+    try {
+      return JSON.parse(saved);
+    } catch(e) {}
+  }
+  return {
+    status: "buka",
+    wa: "6281234567890",
+    lokasi: "Kota Medan, SUMUT",
+    biaya: "Gratis & Bersertifikat"
+  };
+}
+
+function handleSaveSettings(payload) {
+  var settings = {
+    status: payload.status || "buka",
+    wa: payload.wa || "",
+    lokasi: payload.lokasi || "Kota Medan, SUMUT",
+    biaya: payload.biaya || "Gratis & Bersertifikat"
+  };
+  
+  PropertiesService.getScriptProperties().setProperty("GLOBAL_PORTAL_SETTINGS", JSON.stringify(settings));
+  
+  return {
+    success: true,
+    message: "Pengaturan Portal Global berhasil disimpan ke Server Cloud!",
+    data: settings
+  };
 }

@@ -1487,7 +1487,7 @@
          * PENGATURAN SYSTEM ADMIN & EXPORT CSV
          * ==========================================
          */
-        function simpanSettingsAdmin(e) {
+        async function simpanSettingsAdmin(e) {
             if (e) e.preventDefault();
             const statusPend = document.getElementById('setting_status_pendaftaran').value;
             const waPanitia = document.getElementById('setting_wa_panitia').value;
@@ -1501,22 +1501,48 @@
                 biaya: biaya
             };
 
+            // Simpan lokal
             localStorage.setItem('portal_settings', JSON.stringify(settings));
             applySettings(settings);
-            Swal.fire('Berhasil', 'Pengaturan Portal Pendaftaran telah disimpan dan diterapkan!', 'success');
+
+            // Simpan ke Cloud Server Google Apps Script secara global untuk semua HP & Device
+            showLoader("Menyimpan Pengaturan ke Server Cloud...");
+            try {
+                await apiCall('POST', 'saveSettings', settings);
+                hideLoader();
+                Swal.fire('Berhasil!', 'Pengaturan Portal telah disimpan secara GLOBAL ke Cloud Server! Berlaku untuk semua pengunjung di semua HP & Device.', 'success');
+            } catch(err) {
+                hideLoader();
+            }
         }
 
-        function loadSettingsAdmin() {
+        async function loadSettingsAdmin() {
+            // Cek lokal cache dulu
             const saved = localStorage.getItem('portal_settings');
-            if (!saved) return;
+            if (saved) {
+                try {
+                    const localSettings = JSON.parse(saved);
+                    populateSettingsUI(localSettings);
+                    applySettings(localSettings);
+                } catch(e) {}
+            }
+
+            // Ambil data terbaru dari Cloud Server secara background
             try {
-                const settings = JSON.parse(saved);
-                if (document.getElementById('setting_status_pendaftaran')) document.getElementById('setting_status_pendaftaran').value = settings.status || 'buka';
-                if (document.getElementById('setting_wa_panitia')) document.getElementById('setting_wa_panitia').value = settings.wa || '';
-                if (document.getElementById('setting_lokasi_kegiatan')) document.getElementById('setting_lokasi_kegiatan').value = settings.lokasi || '';
-                if (document.getElementById('setting_status_biaya')) document.getElementById('setting_status_biaya').value = settings.biaya || '';
-                applySettings(settings);
-            } catch(e) {}
+                const res = await apiCall('GET', 'getSettings');
+                if (res.success && res.data) {
+                    localStorage.setItem('portal_settings', JSON.stringify(res.data));
+                    populateSettingsUI(res.data);
+                    applySettings(res.data);
+                }
+            } catch(err) {}
+        }
+
+        function populateSettingsUI(settings) {
+            if (document.getElementById('setting_status_pendaftaran')) document.getElementById('setting_status_pendaftaran').value = settings.status || 'buka';
+            if (document.getElementById('setting_wa_panitia')) document.getElementById('setting_wa_panitia').value = settings.wa || '';
+            if (document.getElementById('setting_lokasi_kegiatan')) document.getElementById('setting_lokasi_kegiatan').value = settings.lokasi || '';
+            if (document.getElementById('setting_status_biaya')) document.getElementById('setting_status_biaya').value = settings.biaya || '';
         }
 
         function applySettings(settings) {
