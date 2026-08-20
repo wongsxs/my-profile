@@ -1428,19 +1428,63 @@
                 return;
             }
 
-            // UTF-8 BOM agar Excel Windows otomatis memecah kolom & membaca karakter khusus dengan sempurna
-            let csvContent = "\uFEFF";
-            
-            // Header dengan pemisah titik koma (;) yang 100% kompatibel dengan MS Excel Windows
-            const headers = [
-                "ID Pendaftaran", "Tanggal", "Nama UMKM", "Bidang Usaha", "Produk Utama", 
-                "Legalitas", "Alamat Usaha", "Nama Pemilik", "Jabatan", "No WA", 
-                "Email", "Status NIB", "No NIB", "Status NPWP", "No NPWP", 
-                "Status PIRT", "No PIRT", "Status Merk", "No Merk", "Status Halal", 
-                "No Halal", "Ekspor", "Status"
-            ];
-            
-            csvContent += headers.join(";") + "\n";
+            // HTML Excel dengan Styling Warna Header Navy Blue GAMKI & Teks Putih Tebal
+            let excelHtml = `
+                <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+                <head>
+                    <meta charset="UTF-8">
+                    <!--[if gte mso 9]>
+                    <xml>
+                        <x:ExcelWorkbook>
+                            <x:ExcelWorksheets>
+                                <x:ExcelWorksheet>
+                                    <x:Name>Pendaftaran UMKM GAMKI</x:Name>
+                                    <x:WorksheetOptions>
+                                        <x:DisplayGridlines/>
+                                    </x:WorksheetOptions>
+                                </x:ExcelWorksheet>
+                            </x:ExcelWorksheets>
+                        </x:ExcelWorkbook>
+                    </xml>
+                    <![endif]-->
+                    <style>
+                        table { border-collapse: collapse; font-family: Calibri, Arial, sans-serif; font-size: 11pt; }
+                        th { background-color: #0f2b5c; color: #ffffff; font-weight: bold; text-align: center; border: 1px solid #000000; padding: 8px; }
+                        td { border: 1px solid #d3d3d3; padding: 6px; mso-number-format:"\\@"; }
+                        .text-cell { mso-number-format:"\\@"; }
+                    </style>
+                </head>
+                <body>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Pendaftaran</th>
+                                <th>Tanggal</th>
+                                <th>Nama UMKM</th>
+                                <th>Bidang Usaha</th>
+                                <th>Produk Utama</th>
+                                <th>Legalitas</th>
+                                <th>Alamat Usaha</th>
+                                <th>Nama Pemilik</th>
+                                <th>Jabatan</th>
+                                <th>No WA</th>
+                                <th>Email</th>
+                                <th>Status NIB</th>
+                                <th>No NIB</th>
+                                <th>Status NPWP</th>
+                                <th>No NPWP</th>
+                                <th>Status PIRT</th>
+                                <th>No PIRT</th>
+                                <th>Status Merk</th>
+                                <th>No Merk</th>
+                                <th>Status Halal</th>
+                                <th>No Halal</th>
+                                <th>Ekspor</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
 
             currentPendaftaranData.forEach(d => {
                 let dateFormatted = '-';
@@ -1448,7 +1492,7 @@
                     let s = d.timestamp.toString().replace('T', ' ').replace('Z', '').substring(0, 10);
                     const parts = s.split('-');
                     if (parts.length === 3) {
-                        dateFormatted = `${parts[2]}/${parts[1]}/${parts[0]}`; // 20/08/2026
+                        dateFormatted = `${parts[2]}/${parts[1]}/${parts[0]}`;
                     } else {
                         dateFormatted = s;
                     }
@@ -1461,40 +1505,47 @@
                 const cleanMerk = d.nomor_merk ? d.nomor_merk.toString().replace(/^'/, '') : '-';
                 const cleanHalal = d.nomor_halal ? d.nomor_halal.toString().replace(/^'/, '') : '-';
 
-                let row = [
-                    `="${d.id_pendaftaran || ''}"`,
-                    `="${dateFormatted}"`,
-                    `"${(d.nama_umkm || '').replace(/"/g, '""')}"`,
-                    `"${(d.bidang_usaha || '').replace(/"/g, '""')}"`,
-                    `"${(d.nama_produk || '').replace(/"/g, '""')}"`,
-                    `"${(d.legalitas || '').replace(/"/g, '""')}"`,
-                    `"${(d.alamat || '').replace(/"/g, '""')}"`,
-                    `"${(d.nama_pemilik || '').replace(/"/g, '""')}"`,
-                    `"${(d.jabatan || '').replace(/"/g, '""')}"`,
-                    `="${cleanHp}"`,
-                    `"${d.email || ''}"`,
-                    `"${d.status_nib || ''}"`,
-                    `="${cleanNib}"`,
-                    `"${d.status_npwp || ''}"`,
-                    `="${cleanNpwp}"`,
-                    `"${d.status_pirt || ''}"`,
-                    `="${cleanPirt}"`,
-                    `"${d.status_merk || ''}"`,
-                    `="${cleanMerk}"`,
-                    `"${d.status_halal || ''}"`,
-                    `="${cleanHalal}"`,
-                    `"${d.kegiatan_export || ''}"`,
-                    `"${d.status || ''}"`
-                ];
-                
-                csvContent += row.join(";") + "\n";
+                excelHtml += `
+                    <tr>
+                        <td class="text-cell" style="text-align:center; font-weight:bold;">${d.id_pendaftaran || ''}</td>
+                        <td class="text-cell" style="text-align:center;">${dateFormatted}</td>
+                        <td>${d.nama_umkm || ''}</td>
+                        <td>${d.bidang_usaha || ''}</td>
+                        <td>${d.nama_produk || ''}</td>
+                        <td>${d.legalitas || ''}</td>
+                        <td>${d.alamat || ''}</td>
+                        <td>${d.nama_pemilik || ''}</td>
+                        <td>${d.jabatan || ''}</td>
+                        <td class="text-cell">${cleanHp}</td>
+                        <td>${d.email || ''}</td>
+                        <td>${d.status_nib || ''}</td>
+                        <td class="text-cell">${cleanNib}</td>
+                        <td>${d.status_npwp || ''}</td>
+                        <td class="text-cell">${cleanNpwp}</td>
+                        <td>${d.status_pirt || ''}</td>
+                        <td class="text-cell">${cleanPirt}</td>
+                        <td>${d.status_merk || ''}</td>
+                        <td class="text-cell">${cleanMerk}</td>
+                        <td>${d.status_halal || ''}</td>
+                        <td class="text-cell">${cleanHalal}</td>
+                        <td>${d.kegiatan_export || ''}</td>
+                        <td style="font-weight:bold;">${d.status || ''}</td>
+                    </tr>
+                `;
             });
 
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            excelHtml += `
+                        </tbody>
+                    </table>
+                </body>
+                </html>
+            `;
+
+            const blob = new Blob([excelHtml], { type: 'application/vnd.ms-excel;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.setAttribute("href", url);
-            link.setAttribute("download", `Rekap_Pendaftaran_UMKM_GAMKI_SUMUT_${new Date().toISOString().substring(0, 10)}.csv`);
+            link.setAttribute("download", `Rekap_Pendaftaran_UMKM_GAMKI_SUMUT_${new Date().toISOString().substring(0, 10)}.xls`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
