@@ -1,0 +1,14 @@
+{
+  "redirects": [
+    {
+      "source": "/my-profile/(.*)",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/my-profile",
+      "destination": "/",
+      "permanent": true
+    }
+  ]
+}
