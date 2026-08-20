@@ -516,8 +516,41 @@
                         </div>
                     </div>
                 </div>
-                <div class="text-center mt-5">
-                    <button class="btn btn-outline-primary" onclick="loadDashboardData()"><i class="fas fa-sync-alt me-2"></i>Refresh Data</button>
+                <!-- PENGATURAN PORTAL SYSTEM -->
+                <div class="card border-0 shadow-sm rounded-3 bg-white p-4 mb-4 mt-4">
+                    <h4 class="fw-bold text-primary mb-3"><i class="fas fa-sliders-h me-2"></i>Pengaturan Portal Pendaftaran</h4>
+                    <form id="form-settings-admin" onsubmit="simpanSettingsAdmin(event)">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold">Status Pendaftaran Publik</label>
+                                <select class="form-select" id="setting_status_pendaftaran">
+                                    <option value="buka">Buka Pendaftaran (Aktif)</option>
+                                    <option value="tutup">Tutup Pendaftaran (Kuota Penuh)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold">Nomor WhatsApp Panitia</label>
+                                <input type="tel" class="form-control" id="setting_wa_panitia" placeholder="Contoh: 081234567890">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold">Lokasi Kegiatan</label>
+                                <input type="text" class="form-control" id="setting_lokasi_kegiatan" placeholder="Contoh: Kota Medan, SUMUT">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold">Status Biaya/Sertifikat</label>
+                                <input type="text" class="form-control" id="setting_status_biaya" placeholder="Contoh: Gratis & Bersertifikat">
+                            </div>
+                            <div class="col-12 text-end mt-3">
+                                <button type="submit" class="btn btn-primary rounded-pill px-4">
+                                    <i class="fas fa-save me-1"></i> Simpan Pengaturan
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button class="btn btn-outline-primary" onclick="loadDashboardData()"><i class="fas fa-sync-alt me-2"></i>Refresh Data Dashboard</button>
                 </div>
             </div>
         </section>
@@ -525,7 +558,42 @@
         <!-- VIEW: ADMIN PENDAFTARAN (VERIFIKASI) -->
         <section id="view-admin-pendaftaran" class="view-section">
             <div class="container py-5">
-                <h2 class="fw-bold mb-4"><i class="fas fa-list me-2 text-primary"></i>Daftar Pendaftaran Masuk</h2>
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                    <h2 class="fw-bold m-0"><i class="fas fa-list me-2 text-primary"></i>Daftar Pendaftaran Masuk</h2>
+                    <button class="btn btn-success rounded-pill px-3" onclick="exportPendaftaranCSV()">
+                        <i class="fas fa-file-excel me-1"></i> Export ke Excel/CSV
+                    </button>
+                </div>
+
+                <!-- FILTER & SEARCH BAR -->
+                <div class="card border-0 shadow-sm p-3 mb-4 bg-white rounded-3">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-md-5">
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-search text-muted"></i></span>
+                                <input type="text" id="search-pendaftaran" class="form-control border-start-0" placeholder="Cari Nama UMKM, Pemilik, atau WhatsApp..." onkeyup="filterPendaftaranTable()">
+                            </div>
+                        </div>
+                        <div class="col-md-3.5 col-sm-6">
+                            <select id="filter-status-select" class="form-select" onchange="filterPendaftaranTable()">
+                                <option value="">Semua Status</option>
+                                <option value="Menunggu Verifikasi">Menunggu Verifikasi</option>
+                                <option value="Diterima">Diterima (ACC)</option>
+                                <option value="Ditolak">Ditolak</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3.5 col-sm-6">
+                            <select id="filter-bidang-select" class="form-select" onchange="filterPendaftaranTable()">
+                                <option value="">Semua Bidang Usaha</option>
+                                <option value="Kuliner">Kuliner</option>
+                                <option value="Fashion">Fashion</option>
+                                <option value="Kriya">Kriya / Ekraf</option>
+                                <option value="Jasa">Jasa & Lainnya</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
                         <thead class="table-light">
@@ -656,6 +724,7 @@
             initDynamicFields();
             initImageConverter();
             checkLoginStatus();
+            loadSettingsAdmin();
             
             // Cek hash url jika mau direct link (opsional)
             navigate('landing'); 
@@ -828,6 +897,18 @@
          */
         async function handlePendaftaran(e) {
             e.preventDefault();
+            
+            // Cek status pendaftaran publik
+            const savedSettings = localStorage.getItem('portal_settings');
+            if (savedSettings) {
+                try {
+                    const st = JSON.parse(savedSettings);
+                    if (st.status === 'tutup') {
+                        Swal.fire('Pendaftaran Ditutup', 'Mohon maaf, pendaftaran Pelatihan UMKM GAMKI SUMUT 2026 saat ini telah DITUTUP karena kuota telah penuh.', 'info');
+                        return;
+                    }
+                } catch(err) {}
+            }
             
             const form = document.getElementById('form-pendaftaran');
             const formData = new FormData(form);
@@ -1237,6 +1318,155 @@
             } catch (err) {
                 hideLoader();
             }
+        }
+
+        /**
+         * ==========================================
+         * PENGATURAN SYSTEM ADMIN & EXPORT CSV
+         * ==========================================
+         */
+        function simpanSettingsAdmin(e) {
+            if (e) e.preventDefault();
+            const statusPend = document.getElementById('setting_status_pendaftaran').value;
+            const waPanitia = document.getElementById('setting_wa_panitia').value;
+            const lokasi = document.getElementById('setting_lokasi_kegiatan').value;
+            const biaya = document.getElementById('setting_status_biaya').value;
+
+            const settings = {
+                status: statusPend,
+                wa: waPanitia,
+                lokasi: lokasi,
+                biaya: biaya
+            };
+
+            localStorage.setItem('portal_settings', JSON.stringify(settings));
+            applySettings(settings);
+            Swal.fire('Berhasil', 'Pengaturan Portal Pendaftaran telah disimpan dan diterapkan!', 'success');
+        }
+
+        function loadSettingsAdmin() {
+            const saved = localStorage.getItem('portal_settings');
+            if (!saved) return;
+            try {
+                const settings = JSON.parse(saved);
+                if (document.getElementById('setting_status_pendaftaran')) document.getElementById('setting_status_pendaftaran').value = settings.status || 'buka';
+                if (document.getElementById('setting_wa_panitia')) document.getElementById('setting_wa_panitia').value = settings.wa || '';
+                if (document.getElementById('setting_lokasi_kegiatan')) document.getElementById('setting_lokasi_kegiatan').value = settings.lokasi || '';
+                if (document.getElementById('setting_status_biaya')) document.getElementById('setting_status_biaya').value = settings.biaya || '';
+                applySettings(settings);
+            } catch(e) {}
+        }
+
+        function applySettings(settings) {
+            // Apply WA Helpdesk link
+            const waBtn = document.getElementById('btn-wa-helpdesk');
+            if (waBtn && settings.wa) {
+                const cleanWa = settings.wa.replace(/[^0-9]/g, '');
+                const finalWa = cleanWa.startsWith('0') ? '62' + cleanWa.substring(1) : cleanWa;
+                waBtn.href = `https://wa.me/${finalWa}?text=Halo%20Panitia%20GAMKI%20SUMUT,%20saya%20ingin%20bertanya%20mengenai%20Pendaftaran%20Pelatihan%20UMKM`;
+            }
+            
+            // Apply Lokasi & Status Biaya Badges on Hero
+            const heroBadges = document.querySelectorAll('.hero-section .badge');
+            if (heroBadges.length >= 3) {
+                if (settings.lokasi) heroBadges[0].innerHTML = `<i class="fas fa-map-marker-alt text-danger me-1"></i> ${settings.lokasi}`;
+                if (settings.biaya) heroBadges[2].innerHTML = `<i class="fas fa-certificate text-warning me-1"></i> ${settings.biaya}`;
+            }
+        }
+
+        function filterPendaftaranTable() {
+            const query = (document.getElementById('search-pendaftaran').value || '').toLowerCase();
+            const filterStatus = document.getElementById('filter-status-select').value;
+            const filterBidang = document.getElementById('filter-bidang-select').value;
+
+            const tbody = document.getElementById('tbody-pendaftaran');
+            tbody.innerHTML = '';
+
+            const filteredData = currentPendaftaranData.filter(item => {
+                const matchSearch = !query || 
+                    (item.nama_umkm && item.nama_umkm.toLowerCase().includes(query)) ||
+                    (item.nama_pemilik && item.nama_pemilik.toLowerCase().includes(query)) ||
+                    (item.id_pendaftaran && item.id_pendaftaran.toLowerCase().includes(query)) ||
+                    (item.no_hp && item.no_hp.toString().includes(query));
+
+                const matchStatus = !filterStatus || item.status.indexOf(filterStatus) !== -1;
+                const matchBidang = !filterBidang || (item.bidang_usaha && item.bidang_usaha.toLowerCase().includes(filterBidang.toLowerCase()));
+
+                return matchSearch && matchStatus && matchBidang;
+            });
+
+            if (filteredData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">Tidak ada data pendaftaran yang sesuai filter.</td></tr>`;
+            } else {
+                filteredData.forEach(item => {
+                    let statusBadge = 'bg-secondary';
+                    if (item.status === 'Diterima') statusBadge = 'bg-success';
+                    if (item.status.indexOf('Ditolak') !== -1) statusBadge = 'bg-danger';
+                    if (item.status === 'Menunggu Verifikasi') statusBadge = 'bg-warning text-dark';
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><span class="fw-bold">${item.id_pendaftaran}</span></td>
+                        <td>${item.timestamp ? item.timestamp.substring(0, 10) : '-'}</td>
+                        <td>${item.nama_umkm}</td>
+                        <td>${item.nama_pemilik}</td>
+                        <td><span class="badge ${statusBadge}">${item.status}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-info text-white" onclick="lihatDetailPendaftaran('${item.id_pendaftaran}')">
+                                <i class="fas fa-eye"></i> Detail
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+
+        function exportPendaftaranCSV() {
+            if (!currentPendaftaranData || currentPendaftaranData.length === 0) {
+                Swal.fire('Data Kosong', 'Tidak ada data pendaftaran untuk di-export.', 'warning');
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "ID Pendaftaran,Tanggal,Nama UMKM,Bidang Usaha,Produk Utama,Legalitas,Alamat,Nama Pemilik,Jabatan,No HP,Email,Status NIB,No NIB,Status NPWP,No NPWP,Status PIRT,No PIRT,Status Merk,No Merk,Status Halal,No Halal,Kegiatan Ekspor,Status Verifikasi\n";
+
+            currentPendaftaranData.forEach(d => {
+                let row = [
+                    `"${d.id_pendaftaran || ''}"`,
+                    `"${d.timestamp || ''}"`,
+                    `"${(d.nama_umkm || '').replace(/"/g, '""')}"`,
+                    `"${d.bidang_usaha || ''}"`,
+                    `"${(d.nama_produk || '').replace(/"/g, '""')}"`,
+                    `"${d.legalitas || ''}"`,
+                    `"${(d.alamat || '').replace(/"/g, '""')}"`,
+                    `"${(d.nama_pemilik || '').replace(/"/g, '""')}"`,
+                    `"${(d.jabatan || '').replace(/"/g, '""')}"`,
+                    `"'${d.no_hp || ''}"`,
+                    `"${d.email || ''}"`,
+                    `"${d.status_nib || ''}"`,
+                    `"'${d.nomor_nib || ''}"`,
+                    `"${d.status_npwp || ''}"`,
+                    `"'${d.nomor_npwp || ''}"`,
+                    `"${d.status_pirt || ''}"`,
+                    `"'${d.nomor_pirt || ''}"`,
+                    `"${d.status_merk || ''}"`,
+                    `"'${d.nomor_merk || ''}"`,
+                    `"${d.status_halal || ''}"`,
+                    `"'${d.nomor_halal || ''}"`,
+                    `"${d.kegiatan_export || ''}"`,
+                    `"${d.status || ''}"`
+                ];
+                csvContent += row.join(",") + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Data_Pendaftaran_UMKM_GAMKI_SUMUT_${new Date().toISOString().substring(0, 10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     </script>
 </body>
