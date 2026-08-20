@@ -617,7 +617,12 @@
         <!-- VIEW: ADMIN PESERTA (ACC) -->
         <section id="view-admin-peserta" class="view-section">
             <div class="container py-5">
-                <h2 class="fw-bold mb-4"><i class="fas fa-users me-2 text-success"></i>Daftar Peserta Resmi</h2>
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                    <h2 class="fw-bold m-0"><i class="fas fa-users me-2 text-success"></i>Daftar Peserta Resmi</h2>
+                    <button class="btn btn-success rounded-pill px-3" onclick="exportPesertaExcel()">
+                        <i class="fas fa-file-excel me-1"></i> Export Excel Peserta
+                    </button>
+                </div>
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
                         <thead class="table-light">
@@ -657,7 +662,12 @@
                     </div>
                 </div>
 
-                <h4 class="mb-3">Riwayat Kedatangan</h4>
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                    <h4 class="m-0">Riwayat Kedatangan (Hari H)</h4>
+                    <button class="btn btn-success rounded-pill px-3" onclick="exportRegistrasiExcel()">
+                        <i class="fas fa-file-excel me-1"></i> Export Absensi Kehadiran
+                    </button>
+                </div>
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
                         <thead class="table-light">
@@ -718,6 +728,8 @@
         
         let currentUser = null; // Menyimpan data admin yang login
         let currentPendaftaranData = []; // Cache data pendaftaran
+        let currentPesertaData = []; // Cache data peserta resmi
+        let currentRegistrasiData = []; // Cache data registrasi kehadiran
 
         // Inisialisasi saat halaman dimuat
         document.addEventListener("DOMContentLoaded", () => {
@@ -1093,6 +1105,7 @@
             showLoader("Memuat Daftar Peserta...");
             try {
                 const res = await apiCall('GET', 'getPeserta');
+                currentPesertaData = res.data;
                 const tbody = document.getElementById('tbody-peserta');
                 tbody.innerHTML = '';
 
@@ -1290,6 +1303,7 @@
             showLoader("Memuat Data Registrasi...");
             try {
                 const res = await apiCall('GET', 'getRegistrasi');
+                currentRegistrasiData = res.data;
                 const tbody = document.getElementById('tbody-registrasi');
                 tbody.innerHTML = '';
 
@@ -1566,6 +1580,164 @@
             const link = document.createElement("a");
             link.setAttribute("href", url);
             link.setAttribute("download", `Rekap_Pendaftaran_UMKM_GAMKI_SUMUT_${new Date().toISOString().substring(0, 10)}.xls`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function exportPesertaExcel() {
+            if (!currentPesertaData || currentPesertaData.length === 0) {
+                Swal.fire('Data Kosong', 'Belum ada data peserta resmi yang disetujui.', 'warning');
+                return;
+            }
+
+            let excelHtml = `
+                <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+                <head>
+                    <meta charset="UTF-8">
+                    <!--[if gte mso 9]>
+                    <xml>
+                        <x:ExcelWorkbook>
+                            <x:ExcelWorksheets>
+                                <x:ExcelWorksheet>
+                                    <x:Name>Peserta Resmi UMKM GAMKI</x:Name>
+                                    <x:WorksheetOptions>
+                                        <x:DisplayGridlines/>
+                                    </x:WorksheetOptions>
+                                </x:ExcelWorksheet>
+                            </x:ExcelWorksheets>
+                        </x:ExcelWorkbook>
+                    </xml>
+                    <![endif]-->
+                    <style>
+                        table { border-collapse: collapse; font-family: Calibri, Arial, sans-serif; font-size: 11pt; }
+                        th { background-color: #0f2b5c; color: #ffffff; font-weight: bold; text-align: center; border: 1px solid #000000; padding: 8px; }
+                        td { border: 1px solid #d3d3d3; padding: 6px; mso-number-format:"\\@"; }
+                        .text-cell { mso-number-format:"\\@"; }
+                    </style>
+                </head>
+                <body>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Peserta Resmi</th>
+                                <th>No Pendaftaran Asal</th>
+                                <th>Tanggal ACC</th>
+                                <th>Nama UMKM</th>
+                                <th>Nama Pemilik</th>
+                                <th>No WA / HP</th>
+                                <th>Email</th>
+                                <th>Status Kehadiran (Hari H)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            currentPesertaData.forEach(d => {
+                const cleanHp = d.no_hp ? d.no_hp.toString().replace(/^'/, '') : '-';
+
+                excelHtml += `
+                    <tr>
+                        <td class="text-cell" style="text-align:center; font-weight:bold; color:#0f2b5c;">${d.id_peserta || ''}</td>
+                        <td class="text-cell" style="text-align:center;">${d.id_pendaftaran || ''}</td>
+                        <td class="text-cell" style="text-align:center;">${d.timestamp_acc ? d.timestamp_acc.substring(0, 10) : '-'}</td>
+                        <td>${d.nama_umkm || ''}</td>
+                        <td>${d.nama_pemilik || ''}</td>
+                        <td class="text-cell">${cleanHp}</td>
+                        <td>${d.email || ''}</td>
+                        <td style="font-weight:bold;">${d.status_registrasi || 'Belum Hadir'}</td>
+                    </tr>
+                `;
+            });
+
+            excelHtml += `
+                        </tbody>
+                    </table>
+                </body>
+                </html>
+            `;
+
+            const blob = new Blob([excelHtml], { type: 'application/vnd.ms-excel;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Daftar_Peserta_Resmi_UMKM_GAMKI_SUMUT_${new Date().toISOString().substring(0, 10)}.xls`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function exportRegistrasiExcel() {
+            if (!currentRegistrasiData || currentRegistrasiData.length === 0) {
+                Swal.fire('Data Kosong', 'Belum ada data registrasi kehadiran di hari H.', 'warning');
+                return;
+            }
+
+            let excelHtml = `
+                <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+                <head>
+                    <meta charset="UTF-8">
+                    <!--[if gte mso 9]>
+                    <xml>
+                        <x:ExcelWorkbook>
+                            <x:ExcelWorksheets>
+                                <x:ExcelWorksheet>
+                                    <x:Name>Absensi Kehadiran GAMKI</x:Name>
+                                    <x:WorksheetOptions>
+                                        <x:DisplayGridlines/>
+                                    </x:WorksheetOptions>
+                                </x:ExcelWorksheet>
+                            </x:ExcelWorksheets>
+                        </x:ExcelWorkbook>
+                    </xml>
+                    <![endif]-->
+                    <style>
+                        table { border-collapse: collapse; font-family: Calibri, Arial, sans-serif; font-size: 11pt; }
+                        th { background-color: #0f2b5c; color: #ffffff; font-weight: bold; text-align: center; border: 1px solid #000000; padding: 8px; }
+                        td { border: 1px solid #d3d3d3; padding: 6px; mso-number-format:"\\@"; }
+                        .text-cell { mso-number-format:"\\@"; }
+                    </style>
+                </head>
+                <body>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Registrasi</th>
+                                <th>Waktu Kedatangan</th>
+                                <th>ID Peserta</th>
+                                <th>Nama UMKM</th>
+                                <th>Nama Pemilik</th>
+                                <th>Admin Pencatat</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            currentRegistrasiData.forEach(d => {
+                excelHtml += `
+                    <tr>
+                        <td class="text-cell" style="text-align:center; font-weight:bold;">${d.id_registrasi || ''}</td>
+                        <td class="text-cell" style="text-align:center;">${d.timestamp_registrasi || ''}</td>
+                        <td class="text-cell" style="text-align:center; font-weight:bold; color:#0f2b5c;">${d.id_peserta || ''}</td>
+                        <td>${d.nama_umkm || ''}</td>
+                        <td>${d.nama_pemilik || ''}</td>
+                        <td>${d.admin_user || 'Admin'}</td>
+                    </tr>
+                `;
+            });
+
+            excelHtml += `
+                        </tbody>
+                    </table>
+                </body>
+                </html>
+            `;
+
+            const blob = new Blob([excelHtml], { type: 'application/vnd.ms-excel;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Absensi_Kehadiran_UMKM_GAMKI_SUMUT_${new Date().toISOString().substring(0, 10)}.xls`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
