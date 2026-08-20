@@ -178,18 +178,30 @@
 
         <!-- VIEW: LANDING PAGE -->
         <section id="view-landing" class="view-section active">
+            <!-- Hero Section -->
             <div class="hero-section text-center">
                 <div class="container">
                     <img src="assets/logo-gamki.png" alt="Logo GAMKI SUMUT" class="hero-logo img-fluid">
                     <h1 class="display-4 fw-bold">Pendaftaran Pelatihan UMKM</h1>
                     <h2 class="mb-4 text-warning fw-semibold" style="letter-spacing:0.5px; font-size:1.4rem;">GAMKI SUMATERA UTARA 2026</h2>
-                    <p class="lead mb-4 mx-auto" style="max-width: 700px;">Tingkatkan visibilitas dan jangkauan bisnis Anda dengan bergabung dalam pelatihan UMKM terbesar tahun ini.</p>
-                    <button class="btn btn-gold btn-lg px-5" onclick="navigate('pendaftaran')">
+                    <p class="lead mb-4 mx-auto" style="max-width: 700px;">Tingkatkan visibilitas, legalitas, dan jangkauan bisnis Anda dengan bergabung dalam program pelatihan UMKM terbesar tahun ini.</p>
+                    
+                    <!-- Badges Info Singkat -->
+                    <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
+                        <span class="badge bg-light text-dark px-3 py-2 border shadow-sm fs-6"><i class="fas fa-map-marker-alt text-danger me-1"></i> Kota Medan, SUMUT</span>
+                        <span class="badge bg-light text-dark px-3 py-2 border shadow-sm fs-6"><i class="fas fa-users text-primary me-1"></i> Terbuka untuk UMKM Se-SUMUT</span>
+                        <span class="badge bg-light text-dark px-3 py-2 border shadow-sm fs-6"><i class="fas fa-certificate text-warning me-1"></i> Gratis & Bersertifikat</span>
+                    </div>
+
+                    <button class="btn btn-gold btn-lg px-5 shadow-sm" onclick="navigate('pendaftaran')">
                         Daftar Sekarang <i class="fas fa-arrow-right ms-2"></i>
                     </button>
                 </div>
             </div>
+
+            <!-- Manfaat / Keunggulan -->
             <div class="container mt-5 mb-5 text-center">
+                <h3 class="fw-bold text-primary mb-4">Mengapa Harus Bergabung?</h3>
                 <div class="row g-4">
                     <div class="col-md-4 feature-box">
                         <div class="feature-icon-box">
@@ -209,8 +221,64 @@
                         <div class="feature-icon-box">
                             <i class="fas fa-lightbulb fa-2x"></i>
                         </div>
-                        <h4 class="fw-bold text-primary">Inovasi</h4>
-                        <p class="text-muted">Dapatkan inspirasi dan wawasan baru untuk pengembangan produk Anda.</p>
+                        <h4 class="fw-bold text-primary">Inovasi & Digitalisasi</h4>
+                        <p class="text-muted">Dapatkan ilmu strategi promosi digital dan kelengkapan perizinan usaha.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alur Pendaftaran Visual -->
+            <div class="bg-light py-5">
+                <div class="container text-center">
+                    <h3 class="fw-bold text-primary mb-2">Alur Pendaftaran Peserta</h3>
+                    <p class="text-muted mb-4">4 Langkah mudah bergabung dalam Pelatihan UMKM GAMKI SUMUT 2026</p>
+                    
+                    <div class="row g-4">
+                        <div class="col-md-3">
+                            <div class="card h-100 border-0 shadow-sm p-3 rounded-3">
+                                <div class="text-warning mb-2 fs-1"><i class="fas fa-edit"></i></div>
+                                <h5 class="fw-bold text-primary">1. Isi Form Online</h5>
+                                <p class="small text-muted mb-0">Lengkapi profil usaha, profil pemilik, dan upload foto produk utama Anda.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card h-100 border-0 shadow-sm p-3 rounded-3">
+                                <div class="text-warning mb-2 fs-1"><i class="fas fa-search-dollar"></i></div>
+                                <h5 class="fw-bold text-primary">2. Verifikasi Panitia</h5>
+                                <p class="small text-muted mb-0">Panitia akan memeriksa kelengkapan berkas dan kelayakan data Anda.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card h-100 border-0 shadow-sm p-3 rounded-3">
+                                <div class="text-warning mb-2 fs-1"><i class="fas fa-envelope-open-text"></i></div>
+                                <h5 class="fw-bold text-primary">3. Notifikasi Email</h5>
+                                <p class="small text-muted mb-0">Terima email notifikasi kelulusan beserta kode ID Peserta Resmi.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card h-100 border-0 shadow-sm p-3 rounded-3">
+                                <div class="text-warning mb-2 fs-1"><i class="fas fa-graduation-cap"></i></div>
+                                <h5 class="fw-bold text-primary">4. Ikuti Pelatihan</h5>
+                                <p class="small text-muted mb-0">Hadir di lokasi kegiatan pada Hari H dan lakukan registrasi kehadiran.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Helpdesk / Contact Us -->
+            <div class="container py-5 text-center">
+                <div class="card border-0 bg-primary text-white p-4 rounded-3 shadow">
+                    <div class="row align-items-center">
+                        <div class="col-md-8 text-md-start mb-3 mb-md-0">
+                            <h4 class="fw-bold mb-1"><i class="fas fa-headset me-2 text-warning"></i>Punya Pertanyaan Mengenai Pendaftaran?</h4>
+                            <p class="mb-0 text-light opacity-75">Panitia DPD GAMKI Sumatera Utara siap membantu kendala Pendaftaran UMKM Anda.</p>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <button class="btn btn-warning btn-lg fw-bold rounded-pill px-4" onclick="navigate('pendaftaran')">
+                                <i class="fas fa-paper-plane me-2"></i>Daftar Sekarang
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
