@@ -934,19 +934,29 @@
          * LOGIKA AKSI ADMIN & MODAL
          * ==========================================
          */
+        function formatDriveImageUrl(url) {
+            if (!url || url === '-' || url.startsWith('Error')) return 'assets/logo-gamki.png';
+            const match = url.match(/[-\w]{25,}/);
+            if (match) {
+                return `https://drive.google.com/thumbnail?id=${match[0]}&sz=w600`;
+            }
+            return url;
+        }
+
         function lihatDetailPendaftaran(id) {
             const data = currentPendaftaranData.find(d => d.id_pendaftaran === id);
             if (!data) return;
 
             const modalBody = document.getElementById('modal-detail-content');
             const modalActions = document.getElementById('modal-detail-actions');
+            const imgUrl = formatDriveImageUrl(data.foto_produk_url);
 
             // Render Info
             modalBody.innerHTML = `
                 <div class="row">
                     <div class="col-md-4 text-center mb-3">
-                        <img src="${data.foto_produk_url}" class="img-fluid rounded shadow-sm border" alt="Foto Produk" style="max-height: 200px; object-fit: cover;">
-                        <a href="${data.foto_produk_url}" target="_blank" class="btn btn-sm btn-outline-primary mt-2 d-block">Lihat Foto Asli</a>
+                        <img src="${imgUrl}" class="img-fluid rounded shadow-sm border" alt="Foto Produk" style="max-height: 200px; object-fit: cover;" onerror="this.src='assets/logo-gamki.png'">
+                        <a href="${data.foto_produk_url}" target="_blank" class="btn btn-sm btn-outline-primary mt-2 d-block"><i class="fas fa-external-link-alt me-1"></i> Lihat Foto Asli</a>
                     </div>
                     <div class="col-md-8">
                         <table class="table table-sm table-borderless">

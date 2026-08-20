@@ -180,7 +180,7 @@ function savePhotoToDrive(base64Data, namaUmkm) {
     var blob = Utilities.newBlob(bytes, contentType, fileName);
     var file = folder.createFile(blob);
     file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-    return file.getUrl();
+    return "https://drive.google.com/thumbnail?id=" + file.getId() + "&sz=w800";
   } catch (e) {
     return "Error Upload: " + e.toString();
   }
