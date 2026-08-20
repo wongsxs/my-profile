@@ -1428,42 +1428,62 @@
                 return;
             }
 
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "ID Pendaftaran,Tanggal,Nama UMKM,Bidang Usaha,Produk Utama,Legalitas,Alamat,Nama Pemilik,Jabatan,No HP,Email,Status NIB,No NIB,Status NPWP,No NPWP,Status PIRT,No PIRT,Status Merk,No Merk,Status Halal,No Halal,Kegiatan Ekspor,Status Verifikasi\n";
+            // UTF-8 BOM agar Excel Windows otomatis memecah kolom & membaca karakter khusus dengan sempurna
+            let csvContent = "\uFEFF";
+            
+            // Header dengan pemisah titik koma (;) yang 100% kompatibel dengan MS Excel Windows
+            const headers = [
+                "ID Pendaftaran", "Tanggal", "Nama UMKM", "Bidang Usaha", "Produk Utama", 
+                "Legalitas Usaha", "Alamat Usaha", "Nama Pemilik", "Jabatan", "No HP / WhatsApp", 
+                "Email", "Status NIB", "Nomor NIB", "Status NPWP", "Nomor NPWP", 
+                "Status PIRT", "Nomor PIRT", "Status Merk", "Nomor Merk", "Status Halal", 
+                "Nomor Halal", "Kegiatan Ekspor", "Status Verifikasi"
+            ];
+            
+            csvContent += headers.join(";") + "\n";
 
             currentPendaftaranData.forEach(d => {
+                const cleanHp = d.no_hp ? d.no_hp.toString().replace(/^'/, '') : '-';
+                const cleanNib = d.nomor_nib ? d.nomor_nib.toString().replace(/^'/, '') : '-';
+                const cleanNpwp = d.nomor_npwp ? d.nomor_npwp.toString().replace(/^'/, '') : '-';
+                const cleanPirt = d.nomor_pirt ? d.nomor_pirt.toString().replace(/^'/, '') : '-';
+                const cleanMerk = d.nomor_merk ? d.nomor_merk.toString().replace(/^'/, '') : '-';
+                const cleanHalal = d.nomor_halal ? d.nomor_halal.toString().replace(/^'/, '') : '-';
+
                 let row = [
-                    `"${d.id_pendaftaran || ''}"`,
-                    `"${d.timestamp || ''}"`,
-                    `"${(d.nama_umkm || '').replace(/"/g, '""')}"`,
-                    `"${d.bidang_usaha || ''}"`,
-                    `"${(d.nama_produk || '').replace(/"/g, '""')}"`,
-                    `"${d.legalitas || ''}"`,
-                    `"${(d.alamat || '').replace(/"/g, '""')}"`,
-                    `"${(d.nama_pemilik || '').replace(/"/g, '""')}"`,
-                    `"${(d.jabatan || '').replace(/"/g, '""')}"`,
-                    `"'${d.no_hp || ''}"`,
-                    `"${d.email || ''}"`,
-                    `"${d.status_nib || ''}"`,
-                    `"'${d.nomor_nib || ''}"`,
-                    `"${d.status_npwp || ''}"`,
-                    `"'${d.nomor_npwp || ''}"`,
-                    `"${d.status_pirt || ''}"`,
-                    `"'${d.nomor_pirt || ''}"`,
-                    `"${d.status_merk || ''}"`,
-                    `"'${d.nomor_merk || ''}"`,
-                    `"${d.status_halal || ''}"`,
-                    `"'${d.nomor_halal || ''}"`,
-                    `"${d.kegiatan_export || ''}"`,
-                    `"${d.status || ''}"`
+                    d.id_pendaftaran || '',
+                    d.timestamp ? d.timestamp.substring(0, 10) : '',
+                    (d.nama_umkm || '').replace(/;/g, ' '),
+                    d.bidang_usaha || '',
+                    (d.nama_produk || '').replace(/;/g, ' '),
+                    d.legalitas || '',
+                    (d.alamat || '').replace(/;/g, ' '),
+                    (d.nama_pemilik || '').replace(/;/g, ' '),
+                    (d.jabatan || '').replace(/;/g, ' '),
+                    cleanHp,
+                    d.email || '',
+                    d.status_nib || '',
+                    cleanNib,
+                    d.status_npwp || '',
+                    cleanNpwp,
+                    d.status_pirt || '',
+                    cleanPirt,
+                    d.status_merk || '',
+                    cleanMerk,
+                    d.status_halal || '',
+                    cleanHalal,
+                    d.kegiatan_export || '',
+                    d.status || ''
                 ];
-                csvContent += row.join(",") + "\n";
+                
+                csvContent += row.join(";") + "\n";
             });
 
-            const encodedUri = encodeURI(csvContent);
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Data_Pendaftaran_UMKM_GAMKI_SUMUT_${new Date().toISOString().substring(0, 10)}.csv`);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Rekap_Pendaftaran_UMKM_GAMKI_SUMUT_${new Date().toISOString().substring(0, 10)}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
