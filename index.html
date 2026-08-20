@@ -69,6 +69,18 @@
             display: none; /* Hidden by default for dynamic fields */
             margin-top: 10px;
         }
+        .navbar-brand-logo {
+            height: 36px;
+            width: auto;
+            margin-right: 10px;
+            object-fit: contain;
+        }
+        .hero-logo {
+            max-height: 110px;
+            width: auto;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15));
+        }
     </style>
 </head>
 <body>
@@ -76,8 +88,9 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <div class="container">
-            <a class="navbar-brand font-weight-bold" href="#" onclick="navigate('landing')">
-                <i class="fas fa-store me-2"></i>GAMKI SUMUT 2026
+            <a class="navbar-brand font-weight-bold d-flex align-items-center" href="#" onclick="navigate('landing')">
+                <img src="assets/logo-gamki.png" alt="Logo GAMKI" class="navbar-brand-logo">
+                <span>GAMKI SUMUT 2026</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -112,6 +125,7 @@
         <section id="view-landing" class="view-section active">
             <div class="hero-section text-center">
                 <div class="container">
+                    <img src="assets/logo-gamki.png" alt="Logo GAMKI SUMUT" class="hero-logo img-fluid">
                     <h1 class="display-4 fw-bold">Pendaftaran Pelatihan UMKM</h1>
                     <h2 class="mb-4">GAMKI SUMATERA UTARA 2026</h2>
                     <p class="lead mb-4">Tingkatkan visibilitas dan jangkauan bisnis Anda dengan bergabung dalam pelatihan UMKM terbesar tahun ini.</p>
@@ -148,6 +162,7 @@
                     <div class="col-lg-8">
                         <div class="card shadow-sm border-0 rounded-3">
                             <div class="card-header bg-white border-0 pt-4 pb-0 text-center">
+                                <img src="assets/logo-gamki.png" alt="Logo GAMKI" style="height: 55px; width: auto;" class="mb-2">
                                 <h3 class="fw-bold text-primary">Formulir Pendaftaran UMKM</h3>
                                 <p class="text-muted">Harap isi data dengan lengkap dan benar.</p>
                             </div>
