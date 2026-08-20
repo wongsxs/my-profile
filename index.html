@@ -384,8 +384,9 @@
                                     <div class="row g-3 mb-4">
                                         <!-- NIB -->
                                         <div class="col-md-6">
-                                            <label class="form-label">Status NIB</label>
-                                            <select class="form-select status-trigger" data-target="nib_container" name="status_nib">
+                                            <label class="form-label">Status NIB <span class="text-danger">*</span></label>
+                                            <select class="form-select status-trigger" data-target="nib_container" name="status_nib" required>
+                                                <option value="">Pilih Status NIB...</option>
                                                 <option value="Belum Memiliki">Belum Memiliki</option>
                                                 <option value="Ada">Ada</option>
                                             </select>
@@ -395,8 +396,9 @@
                                         </div>
                                         <!-- NPWP -->
                                         <div class="col-md-6">
-                                            <label class="form-label">Status NPWP</label>
-                                            <select class="form-select status-trigger" data-target="npwp_container" name="status_npwp">
+                                            <label class="form-label">Status NPWP <span class="text-danger">*</span></label>
+                                            <select class="form-select status-trigger" data-target="npwp_container" name="status_npwp" required>
+                                                <option value="">Pilih Status NPWP...</option>
                                                 <option value="Belum Memiliki">Belum Memiliki</option>
                                                 <option value="Ada">Ada</option>
                                             </select>
@@ -406,8 +408,9 @@
                                         </div>
                                         <!-- PIRT -->
                                         <div class="col-md-6">
-                                            <label class="form-label">Status PIRT</label>
-                                            <select class="form-select status-trigger" data-target="pirt_container" name="status_pirt">
+                                            <label class="form-label">Status PIRT <span class="text-danger">*</span></label>
+                                            <select class="form-select status-trigger" data-target="pirt_container" name="status_pirt" required>
+                                                <option value="">Pilih Status PIRT...</option>
                                                 <option value="Belum Memiliki">Belum Memiliki</option>
                                                 <option value="Ada">Ada</option>
                                             </select>
@@ -417,8 +420,9 @@
                                         </div>
                                         <!-- Merk Dagang -->
                                         <div class="col-md-6">
-                                            <label class="form-label">Sertifikat Merk Dagang</label>
-                                            <select class="form-select status-trigger" data-target="merk_container" name="status_merk">
+                                            <label class="form-label">Sertifikat Merk Dagang <span class="text-danger">*</span></label>
+                                            <select class="form-select status-trigger" data-target="merk_container" name="status_merk" required>
+                                                <option value="">Pilih Status Merk Dagang...</option>
                                                 <option value="Belum Memiliki">Belum Memiliki</option>
                                                 <option value="Ada">Ada</option>
                                             </select>
@@ -428,8 +432,9 @@
                                         </div>
                                         <!-- Halal -->
                                         <div class="col-md-6">
-                                            <label class="form-label">Sertifikat Halal</label>
-                                            <select class="form-select status-trigger" data-target="halal_container" name="status_halal">
+                                            <label class="form-label">Sertifikat Halal <span class="text-danger">*</span></label>
+                                            <select class="form-select status-trigger" data-target="halal_container" name="status_halal" required>
+                                                <option value="">Pilih Status Sertifikat Halal...</option>
                                                 <option value="Belum Memiliki">Belum Memiliki</option>
                                                 <option value="Ada">Ada</option>
                                             </select>
@@ -439,8 +444,9 @@
                                         </div>
                                         <!-- Export -->
                                         <div class="col-md-6">
-                                            <label class="form-label">Kegiatan Ekspor</label>
-                                            <select class="form-select" name="kegiatan_export">
+                                            <label class="form-label">Kegiatan Ekspor <span class="text-danger">*</span></label>
+                                            <select class="form-select" name="kegiatan_export" required>
+                                                <option value="">Pilih Status Kegiatan Ekspor...</option>
                                                 <option value="Belum Pernah">Belum Pernah</option>
                                                 <option value="Pernah">Pernah</option>
                                             </select>
@@ -798,6 +804,17 @@
                 localStorage.setItem('last_active_view', viewId);
             }
 
+            // Reset form pendaftaran setiap kali halaman pendaftaran dibuka (sesi baru)
+            if (viewId === 'pendaftaran') {
+                const form = document.getElementById('form-pendaftaran');
+                if (form) form.reset();
+                const prevContainer = document.getElementById('foto_preview_container');
+                if (prevContainer) prevContainer.classList.add('d-none');
+                const base64Input = document.getElementById('foto_produk_base64');
+                if (base64Input) base64Input.value = '';
+                initDynamicFields();
+            }
+
             // Trigger load data jika masuk halaman admin
             if (viewId === 'dashboard') loadDashboardData();
             if (viewId === 'admin-pendaftaran') loadDataPendaftaran();
@@ -992,6 +1009,9 @@
                     form.reset();
                     const prevContainer = document.getElementById('foto_preview_container');
                     if (prevContainer) prevContainer.classList.add('d-none');
+                    const base64Input = document.getElementById('foto_produk_base64');
+                    if (base64Input) base64Input.value = '';
+                    initDynamicFields();
                     navigate('landing');
                 });
             } catch (err) {
