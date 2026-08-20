@@ -114,6 +114,15 @@ function setupSpreadsheet() {
 
 // 3. HANDLER PENDAFTARAN (PUBLIK)
 
+function formatTextNumber(val) {
+  if (!val || val.toString().trim() === "" || val === "-") return "-";
+  var str = val.toString().trim();
+  if (str.startsWith("8")) {
+    str = "0" + str;
+  }
+  return "'" + str;
+}
+
 function handleDaftar(data) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName("Pendaftaran");
@@ -138,18 +147,18 @@ function handleDaftar(data) {
     data.alamat || "-",
     data.nama_pemilik || "-",
     data.jabatan || "-",
-    data.no_hp || "-",
+    formatTextNumber(data.no_hp),
     data.email || "-",
     data.status_nib || "Belum Memiliki",
-    data.nomor_nib || "-",
+    formatTextNumber(data.nomor_nib),
     data.status_npwp || "Belum Memiliki",
-    data.nomor_npwp || "-",
+    formatTextNumber(data.nomor_npwp),
     data.status_pirt || "Belum Memiliki",
-    data.nomor_pirt || "-",
+    formatTextNumber(data.nomor_pirt),
     data.status_merk || "Belum Memiliki",
-    data.nomor_merk || "-",
+    formatTextNumber(data.nomor_merk),
     data.status_halal || "Belum Memiliki",
-    data.nomor_halal || "-",
+    formatTextNumber(data.nomor_halal),
     data.kegiatan_export || "Belum Pernah",
     fotoUrl,
     "Menunggu Verifikasi"
@@ -325,7 +334,7 @@ function handleTerima(data) {
     pendaftaranObj[0],
     pendaftaranObj[2], // nama_umkm
     pendaftaranObj[7], // nama_pemilik
-    pendaftaranObj[9], // no_hp
+    formatTextNumber(pendaftaranObj[9]), // no_hp
     pendaftaranObj[10],// email
     "Belum Registrasi",
     dateStr
