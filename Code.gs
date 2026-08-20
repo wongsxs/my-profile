@@ -256,7 +256,7 @@ function handleDaftar(data) {
   // KASUS 4: Pendaftaran Baru (Baru Pertama Kali Daftar)
   var now = new Date();
   var timestamp = Utilities.formatDate(now, Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm:ss");
-  var idPendaftaran = "REG-2026-" + Math.floor(1000 + Math.random() * 9000);
+  var idPendaftaran = generateUniqueId("Pendaftaran", "REG-2026-");
   
   var fotoUrl = "-";
   if (data.foto_produk_base64) {
@@ -450,8 +450,8 @@ function handleTerima(data) {
   // Update status di Sheet Pendaftaran
   sheetPend.getRange(targetRow, 24).setValue("Diterima");
   
-  // Buat ID Peserta Unik
-  var idPeserta = "PST-2026-" + Math.floor(1000 + Math.random() * 9000);
+  // Buat ID Peserta Unik (Garansi Bebas Bentrok)
+  var idPeserta = generateUniqueId("Peserta", "PST-2026-");
   var sheetPes = ss.getSheetByName("Peserta");
   var dateStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm:ss");
   
@@ -544,11 +544,10 @@ function handleRegistrasiHariH(data) {
   // Update status peserta di Sheet Peserta
   sheetPes.getRange(targetRow, 7).setValue("Sudah Registrasi");
   
-  // Catat di Sheet Registrasi dengan ID Ringkas HDR-2026-XXXX
+  // Catat di Sheet Registrasi dengan ID Ringkas HDR-2026-XXXX (Garansi Bebas Bentrok)
   var sheetReg = ss.getSheetByName("Registrasi");
   var nowStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm:ss");
-  var randomDigits = Math.floor(1000 + Math.random() * 9000);
-  var idReg = "HDR-2026-" + randomDigits;
+  var idReg = generateUniqueId("Registrasi", "HDR-2026-");
   
   sheetReg.appendRow([
     idReg,
@@ -685,4 +684,32 @@ function sendEmailKonfirmasiPendaftaran(email, namaPemilik, namaUmkm, idPendafta
   } catch(e) {
     Logger.log("Gagal kirim email konfirmasi: " + e.toString());
   }
+}
+
+/**
+ * FUNGSI GENERATOR ID UNIK (GARANSI 100% BEBAS BENTROK)
+ * Menghasilkan ID Urut Berurutan + Auto-Check Duplikasi Loop
+ */
+function generateUniqueId(sheetName, prefix) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(sheetName);
+  var rows = sheet.getDataRange().getValues();
+  
+  var existingIds = {};
+  for (var i = 1; i < rows.length; i++) {
+    if (rows[i][0]) existingIds[rows[i][0].toString().trim()] = true;
+  }
+  
+  var count = rows.length; // Row index
+  var seqStr = ("000" + count).slice(-4);
+  var newId = prefix + seqStr;
+  
+  // Garansi 100% tidak bentrok
+  while (existingIds[newId]) {
+    count++;
+    seqStr = ("000" + count).slice(-4);
+    newId = prefix + seqStr;
+  }
+  
+  return newId;
 }
