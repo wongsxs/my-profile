@@ -726,8 +726,13 @@
             checkLoginStatus();
             loadSettingsAdmin();
             
-            // Cek hash url jika mau direct link (opsional)
-            navigate('landing'); 
+            // Cek view aktif tersimpan saat refresh (F5)
+            const savedView = localStorage.getItem('last_active_view');
+            if (currentUser && savedView && (savedView.startsWith('admin') || savedView === 'dashboard')) {
+                navigate(savedView);
+            } else {
+                navigate('landing');
+            }
         });
 
         /**
@@ -744,6 +749,11 @@
             const targetView = document.getElementById('view-' + viewId);
             if (targetView) {
                 targetView.classList.add('active');
+            }
+
+            // Simpan view aktif di localStorage agar tidak kembali ke landing saat F5/refresh
+            if (viewId) {
+                localStorage.setItem('last_active_view', viewId);
             }
 
             // Trigger load data jika masuk halaman admin
@@ -993,6 +1003,7 @@
         function logout() {
             currentUser = null;
             localStorage.removeItem('adminUser');
+            localStorage.removeItem('last_active_view');
             updateNavbarStatus();
             navigate('landing');
             Swal.fire('Logout', 'Anda telah keluar dari dashboard admin.', 'info');
