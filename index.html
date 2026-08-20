@@ -18,35 +18,31 @@
     
     <style>
         :root {
-            --primary-color: #0f2b5c;      /* GAMKI Deep Navy Blue */
-            --primary-dark: #091a3a;       /* GAMKI Dark Navy */
-            --primary-light: #1e40af;      /* GAMKI Blue Accent */
-            --accent-gold: #d97706;        /* GAMKI Gold */
-            --accent-gold-light: #f59e0b;  /* GAMKI Light Gold */
-            --secondary-color: #f1f5f9;
+            --primary-color: #0f2b5c;      /* GAMKI Solid Navy */
+            --accent-gold: #d97706;        /* GAMKI Solid Gold */
+            --bg-body: #f8fafc;
         }
         body {
-            background-color: #f1f5f9;
+            background-color: #f8fafc;
             font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
-            padding-top: 60px; /* Space for fixed navbar */
+            padding-top: 60px;
         }
         .view-section {
-            display: none; /* Hide all sections by default */
-            animation: fadeIn 0.3s ease-in-out;
+            display: none;
+            animation: fadeIn 0.2s ease-in-out;
         }
         .view-section.active {
-            display: block; /* Show active section */
+            display: block;
         }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         /* Loader Overlay */
         #loader {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 43, 92, 0.92);
-            backdrop-filter: blur(5px);
+            background: rgba(15, 43, 92, 0.95);
             z-index: 9999;
             display: none;
             justify-content: center;
@@ -54,11 +50,10 @@
             flex-direction: column;
             color: #ffffff;
         }
-        /* Custom Navbar GAMKI Theme */
+        /* Solid Flat Navbar */
         .navbar-custom {
-            background: linear-gradient(135deg, #091a3a 0%, #0f2b5c 100%) !important;
-            box-shadow: 0 4px 15px rgba(15, 43, 92, 0.25);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: #0f2b5c !important;
+            border-bottom: 3px solid #d97706;
         }
         .navbar-brand-logo {
             height: 38px;
@@ -66,82 +61,77 @@
             margin-right: 10px;
             object-fit: contain;
         }
-        /* Custom Hero Section */
+        /* Solid Flat Hero Section */
         .hero-section {
-            background: linear-gradient(135deg, #091a3a 0%, #0f2b5c 60%, #1e40af 100%);
-            color: white;
-            padding: 80px 0 60px;
-            border-radius: 0 0 25px 25px;
-            margin-top: -60px; /* Overlap navbar space */
-            padding-top: 120px;
-            box-shadow: 0 10px 30px rgba(15, 43, 92, 0.15);
+            background-color: #0f2b5c;
+            color: #ffffff;
+            padding: 60px 0 50px;
+            margin-top: -60px;
+            padding-top: 110px;
+            border-bottom: 4px solid #d97706;
         }
         .hero-logo {
             max-height: 110px;
             width: auto;
             margin-bottom: 20px;
-            filter: drop-shadow(0 6px 15px rgba(0,0,0,0.3));
         }
-        /* Custom Button Theme */
+        /* Clean Flat Buttons */
         .btn-gold {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
+            background-color: #d97706;
             color: #ffffff !important;
             font-weight: 700;
             border: none;
-            transition: all 0.3s ease;
+            padding: 12px 32px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
         }
         .btn-gold:hover {
-            background: linear-gradient(135deg, #d97706, #b45309);
+            background-color: #b45309;
             color: #ffffff !important;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(217, 119, 6, 0.35);
         }
         .btn-primary {
-            background-color: var(--primary-color) !important;
-            border-color: var(--primary-color) !important;
+            background-color: #0f2b5c !important;
+            border-color: #0f2b5c !important;
+            color: #ffffff !important;
+            font-weight: 600;
+            border-radius: 6px;
         }
         .btn-primary:hover {
-            background-color: var(--primary-light) !important;
-            border-color: var(--primary-light) !important;
+            background-color: #1e40af !important;
+            border-color: #1e40af !important;
         }
         .text-primary {
-            color: var(--primary-color) !important;
+            color: #0f2b5c !important;
         }
         .bg-primary {
-            background-color: var(--primary-color) !important;
+            background-color: #0f2b5c !important;
         }
         .feature-icon-box {
-            width: 70px;
-            height: 70px;
-            border-radius: 20px;
-            background: rgba(15, 43, 92, 0.08);
-            color: var(--primary-color);
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            background: #e2e8f0;
+            color: #0f2b5c;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 15px;
-            transition: all 0.3s ease;
         }
-        .feature-box:hover .feature-icon-box {
-            background: var(--primary-color);
-            color: #ffffff;
-            transform: scale(1.1);
+        .card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
         }
         .card-stats {
-            transition: transform 0.2s;
-        }
-        .card-stats:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 .5rem 1rem rgba(15, 43, 92, .15)!important;
+            transition: none;
         }
         .table-responsive {
             background: white;
-            border-radius: 10px;
+            border-radius: 8px;
             padding: 15px;
-            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.075);
+            border: 1px solid #e2e8f0;
         }
         .dynamic-field-container {
-            display: none; /* Hidden by default for dynamic fields */
+            display: none;
             margin-top: 10px;
         }
     </style>
@@ -190,9 +180,9 @@
                 <div class="container">
                     <img src="assets/logo-gamki.png" alt="Logo GAMKI SUMUT" class="hero-logo img-fluid">
                     <h1 class="display-4 fw-bold">Pendaftaran Pelatihan UMKM</h1>
-                    <h2 class="mb-4 text-warning fw-semibold" style="letter-spacing:1px; font-size:1.5rem;">GAMKI SUMATERA UTARA 2026</h2>
-                    <p class="lead mb-4 mx-auto" style="max-width: 700px; opacity: 0.9;">Tingkatkan visibilitas dan jangkauan bisnis Anda dengan bergabung dalam pelatihan UMKM terbesar tahun ini.</p>
-                    <button class="btn btn-gold btn-lg px-5 rounded-pill shadow-lg" onclick="navigate('pendaftaran')">
+                    <h2 class="mb-4 text-warning fw-semibold" style="letter-spacing:0.5px; font-size:1.4rem;">GAMKI SUMATERA UTARA 2026</h2>
+                    <p class="lead mb-4 mx-auto" style="max-width: 700px;">Tingkatkan visibilitas dan jangkauan bisnis Anda dengan bergabung dalam pelatihan UMKM terbesar tahun ini.</p>
+                    <button class="btn btn-gold btn-lg px-5" onclick="navigate('pendaftaran')">
                         Daftar Sekarang <i class="fas fa-arrow-right ms-2"></i>
                     </button>
                 </div>
