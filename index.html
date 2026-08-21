@@ -220,7 +220,7 @@
                         <div class="hero-event-pill bg-white text-dark px-3 py-2 rounded-pill shadow-sm border">
                             <span class="me-2"><i class="fas fa-calendar-alt text-warning me-1"></i> 25 Sep 2026</span>
                             <span class="text-muted opacity-50 me-2">|</span>
-                            <span id="hero-lokasi-text"><i class="fas fa-map-marker-alt text-danger me-1"></i> Bank Sumut Lt. 10, Medan</span>
+                            <span id="hero-lokasi-text"><i class="fas fa-map-marker-alt text-danger me-1"></i> Bank Sumut Lt. 10, Jl. Imam Bonjol Medan</span>
                         </div>
                         <div class="hero-event-pill bg-white text-dark px-3 py-2 rounded-pill shadow-sm border">
                             <i class="fas fa-users text-primary me-1"></i> Terbuka untuk UMKM Se-SUMUT
@@ -1695,8 +1695,8 @@
             if (document.getElementById('setting_status_pendaftaran')) document.getElementById('setting_status_pendaftaran').value = settings.status || 'buka';
             if (document.getElementById('setting_wa_panitia')) document.getElementById('setting_wa_panitia').value = (settings.wa && !settings.wa.includes('6281234567890')) ? settings.wa : '0822-7239-4818 / 0881-0102-83260';
             if (document.getElementById('setting_lokasi_kegiatan')) {
-                const isOldLokasi = !settings.lokasi || settings.lokasi === 'Sumatera Utara' || settings.lokasi === 'Kota Medan, SUMUT';
-                document.getElementById('setting_lokasi_kegiatan').value = isOldLokasi ? 'Lt. 10 Kantor Bank Sumut, Jl. Imam Bonjol, Medan' : settings.lokasi;
+                const isOldLokasi = !settings.lokasi || settings.lokasi === 'Sumatera Utara' || settings.lokasi === 'Kota Medan, SUMUT' || settings.lokasi.includes('Lt. 10 Kantor Bank Sumut');
+                document.getElementById('setting_lokasi_kegiatan').value = isOldLokasi ? 'Bank Sumut Lt. 10, Jl. Imam Bonjol Medan' : settings.lokasi;
             }
         }
 
@@ -1742,9 +1742,8 @@
             // 4. Apply Lokasi Badge on Hero
             const lokasiSpan = document.getElementById('hero-lokasi-text');
             if (lokasiSpan) {
-                const lokasiText = (settings && settings.lokasi && settings.lokasi !== "Sumatera Utara" && settings.lokasi !== "Kota Medan, SUMUT") 
-                    ? settings.lokasi 
-                    : "Bank Sumut Lt. 10, Medan";
+                const isLegacy = !settings.lokasi || settings.lokasi === "Sumatera Utara" || settings.lokasi === "Kota Medan, SUMUT" || settings.lokasi.includes("Bank Sumut Lt. 10, Medan");
+                const lokasiText = isLegacy ? "Bank Sumut Lt. 10, Jl. Imam Bonjol Medan" : settings.lokasi;
                 lokasiSpan.innerHTML = `<i class="fas fa-map-marker-alt text-danger me-1"></i> ${lokasiText}`;
             }
         }

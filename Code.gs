@@ -630,7 +630,7 @@ function sendEmailDiterima(email, namaPemilik, namaUmkm, idPendaftaran, idPesert
           <p style="margin: 0 0 10px 0;"><strong>ID Peserta Resmi:</strong> <span style="font-size: 18px; color: #0f2b5c; font-weight: bold;">${idPeserta}</span></p>
           <hr style="border: 0; border-top: 1px solid #cbd5e1; margin: 10px 0;">
           <p style="margin: 0 0 5px 0;">📅 <strong>Tanggal Pelaksanaan:</strong> 25 September 2026</p>
-          <p style="margin: 0;">📍 <strong>Lokasi Acara:</strong> Lantai 10 Kantor Bank Sumut, Jl. Imam Bonjol, Medan</p>
+          <p style="margin: 0;">📍 <strong>Lokasi Acara:</strong> Bank Sumut Lt. 10, Jl. Imam Bonjol Medan</p>
         </div>
         
         <p><strong>Petunjuk Penting:</strong></p>
@@ -784,7 +784,7 @@ function getGlobalSettings() {
   return {
     status: "buka",
     wa: "6281234567890",
-    lokasi: "Lt. 10 Kantor Bank Sumut, Jl. Imam Bonjol, Medan",
+    lokasi: "Bank Sumut Lt. 10, Jl. Imam Bonjol Medan",
     biaya: ""
   };
 }
@@ -793,7 +793,7 @@ function handleSaveSettings(payload) {
   var settings = {
     status: payload.status || "buka",
     wa: payload.wa || "",
-    lokasi: payload.lokasi || "Lt. 10 Kantor Bank Sumut, Jl. Imam Bonjol, Medan",
+    lokasi: payload.lokasi || "Bank Sumut Lt. 10, Jl. Imam Bonjol Medan",
     biaya: payload.biaya || ""
   };
   
