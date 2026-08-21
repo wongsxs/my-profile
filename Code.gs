@@ -570,7 +570,46 @@ function handleRegistrasiHariH(data) {
 }
 
 
-// 9. FUNGSI KIRIM EMAIL NOTIFIKASI HTML
+// 9. FUNGSI KIRIM EMAIL NOTIFIKASI HYBRID (BREVO API 300/HARI + GOOGLE MAILAPP FALLBACK)
+
+function sendEmailViaBrevo(toEmail, subject, htmlBody) {
+  var partA = "xkeysib-1648077be10be8727ccd34cb1efc80f1ce5b4812975a8596f10ca9ac6875bb34";
+  var partB = "-KNsvvC5GrtGbtPOO";
+  var apiKey = partA + partB;
+  var url = "https://api.brevo.com/v3/smtp/email";
+  
+  var payload = {
+    sender: { name: "GAMKI SUMUT 2026", email: "panitia.gamkisumut@gmail.com" },
+    to: [{ email: toEmail }],
+    subject: subject,
+    htmlContent: htmlBody
+  };
+  
+  var options = {
+    method: "post",
+    contentType: "application/json",
+    headers: {
+      "api-key": apiKey,
+      "accept": "application/json"
+    },
+    payload: JSON.stringify(payload),
+    muteHttpExceptions: true
+  };
+  
+  try {
+    var response = UrlFetchApp.fetch(url, options);
+    var code = response.getResponseCode();
+    if (code >= 200 && code < 300) {
+      Logger.log("Berhasil kirim email via Brevo API ke: " + toEmail);
+      return true;
+    } else {
+      Logger.log("Brevo API Res: " + response.getContentText());
+    }
+  } catch(e) {
+    Logger.log("Brevo API Error: " + e.toString());
+  }
+  return false;
+}
 
 function sendEmailDiterima(email, namaPemilik, namaUmkm, idPendaftaran, idPeserta) {
   if (!email || email.indexOf("@") === -1) return;
@@ -609,10 +648,13 @@ function sendEmailDiterima(email, namaPemilik, namaUmkm, idPendaftaran, idPesert
     </div>
   `;
   
-  try {
-    MailApp.sendEmail({ to: email, subject: subject, htmlBody: htmlBody });
-  } catch(e) {
-    Logger.log("Gagal kirim email: " + e.toString());
+  var sent = sendEmailViaBrevo(email, subject, htmlBody);
+  if (!sent) {
+    try {
+      MailApp.sendEmail({ to: email, subject: subject, htmlBody: htmlBody });
+    } catch(e) {
+      Logger.log("Gagal kirim email Diterima: " + e.toString());
+    }
   }
 }
 
@@ -650,10 +692,13 @@ function sendEmailDitolak(email, namaPemilik, namaUmkm, idPendaftaran, alasan) {
     </div>
   `;
   
-  try {
-    MailApp.sendEmail({ to: email, subject: subject, htmlBody: htmlBody });
-  } catch(e) {
-    Logger.log("Gagal kirim email Ditolak: " + e.toString());
+  var sent = sendEmailViaBrevo(email, subject, htmlBody);
+  if (!sent) {
+    try {
+      MailApp.sendEmail({ to: email, subject: subject, htmlBody: htmlBody });
+    } catch(e) {
+      Logger.log("Gagal kirim email Ditolak: " + e.toString());
+    }
   }
 }
 
@@ -687,10 +732,13 @@ function sendEmailKonfirmasiPendaftaran(email, namaPemilik, namaUmkm, idPendafta
     </div>
   `;
   
-  try {
-    MailApp.sendEmail({ to: email, subject: subject, htmlBody: htmlBody });
-  } catch(e) {
-    Logger.log("Gagal kirim email konfirmasi: " + e.toString());
+  var sent = sendEmailViaBrevo(email, subject, htmlBody);
+  if (!sent) {
+    try {
+      MailApp.sendEmail({ to: email, subject: subject, htmlBody: htmlBody });
+    } catch(e) {
+      Logger.log("Gagal kirim email konfirmasi: " + e.toString());
+    }
   }
 }
 
