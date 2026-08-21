@@ -412,13 +412,14 @@
                                             <input type="text" class="form-control" name="nama_produk" placeholder="Contoh: Kopi Bubuk Arabika" required>
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label">Legalitas Usaha Badan</label>
-                                            <select class="form-select" name="legalitas">
+                                            <label class="form-label">Legalitas Usaha Badan <span class="text-danger">*</span></label>
+                                            <select class="form-select" name="legalitas" required>
+                                                <option value="">Pilih Legalitas Usaha...</option>
                                                 <option value="Perorangan">Perorangan</option>
                                                 <option value="PT">PT</option>
                                                 <option value="CV">CV</option>
-                                                <option value="Firma">UD</option>
-                                                <option value="Koperasi">LAINNYA</option>
+                                                <option value="UD">UD</option>
+                                                <option value="Lainnya">Lainnya</option>
                                             </select>
                                         </div>
                                         <div class="col-12">
