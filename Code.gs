@@ -805,3 +805,32 @@ function handleSaveSettings(payload) {
     data: settings
   };
 }
+
+function tesBrevoDirect() {
+  var partA = "xkeysib-1648077be10be8727ccd34cb1efc80f1ce5b4812975a8596f10ca9ac6875bb34";
+  var partB = "-KNsvvC5GrtGbtPOO";
+  var apiKey = partA + partB;
+  var url = "https://api.brevo.com/v3/smtp/email";
+  
+  var payload = {
+    sender: { name: "GAMKI SUMUT 2026", email: "umkmgamkisumut@gmail.com" },
+    to: [{ email: "umkmgamkisumut@gmail.com" }],
+    subject: "Tes Brevo Direct API",
+    htmlContent: "<h1>Tes Brevo API</h1>"
+  };
+  
+  var options = {
+    method: "post",
+    contentType: "application/json",
+    headers: {
+      "api-key": apiKey,
+      "accept": "application/json"
+    },
+    payload: JSON.stringify(payload),
+    muteHttpExceptions: true
+  };
+  
+  var response = UrlFetchApp.fetch(url, options);
+  Logger.log("HTTP Status Code: " + response.getResponseCode());
+  Logger.log("Pesan Response Brevo: " + response.getContentText());
+}
