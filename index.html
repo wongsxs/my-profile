@@ -945,7 +945,7 @@
                 reqFields.forEach(el => {
                     if (el.type === 'file') {
                         const hiddenBase64 = document.getElementById('foto_produk_base64');
-                        if (hiddenBase64 && hiddenBase64.value) filledCount++;
+                        if ((hiddenBase64 && hiddenBase64.value) || (el.files && el.files.length > 0)) filledCount++;
                     } else if (el.value && el.value.trim() !== '') {
                         filledCount++;
                     }
@@ -1041,6 +1041,7 @@
                         previewImg.src = compressedBase64;
                         previewContainer.classList.remove('d-none');
                     }
+                    updateFormProgress();
                 });
             });
         }
