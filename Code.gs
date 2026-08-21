@@ -629,7 +629,7 @@ function sendEmailDiterima(email, namaPemilik, namaUmkm, idPendaftaran, idPesert
           <p style="margin: 0 0 5px 0;"><strong>ID Pendaftaran:</strong> ${idPendaftaran}</p>
           <p style="margin: 0 0 10px 0;"><strong>ID Peserta Resmi:</strong> <span style="font-size: 18px; color: #0f2b5c; font-weight: bold;">${idPeserta}</span></p>
           <hr style="border: 0; border-top: 1px solid #cbd5e1; margin: 10px 0;">
-          <p style="margin: 0 0 5px 0;">📅 <strong>Tanggal Pelaksanaan:</strong> 25 September 2026</p>
+          <p style="margin: 0 0 5px 0;">📅 <strong>Tanggal Pelaksanaan:</strong> Jum'at, 25 September 2026</p>
           <p style="margin: 0;">📍 <strong>Lokasi Acara:</strong> Bank Sumut Lt. 10, Jl. Imam Bonjol Medan</p>
         </div>
         
