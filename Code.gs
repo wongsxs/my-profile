@@ -579,7 +579,7 @@ function sendEmailViaBrevo(toEmail, subject, htmlBody) {
   var url = "https://api.brevo.com/v3/smtp/email";
   
   var payload = {
-    sender: { name: "GAMKI SUMUT 2026", email: "panitia.gamkisumut@gmail.com" },
+    sender: { name: "GAMKI SUMUT 2026", email: "umkmgamkisumut@gmail.com" },
     to: [{ email: toEmail }],
     subject: subject,
     htmlContent: htmlBody
