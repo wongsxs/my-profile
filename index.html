@@ -62,10 +62,20 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
         .navbar-brand-logo {
-            height: 38px;
+            height: 36px;
             width: auto;
-            margin-right: 10px;
+            margin-right: 6px;
             object-fit: contain;
+        }
+        @media (max-width: 576px) {
+            .navbar-brand-text {
+                font-size: 0.8rem !important;
+                line-height: 1.2;
+            }
+            .navbar-brand-logo {
+                height: 30px;
+                margin-right: 4px;
+            }
         }
         /* Solid Flat Hero Section */
         .hero-section {
@@ -161,7 +171,7 @@
             <a class="navbar-brand font-weight-bold d-flex align-items-center" href="#" onclick="navigate('landing')">
                 <img src="assets/logo-bank-sumut.png" alt="Logo GAMKI Organisasi" class="navbar-brand-logo">
                 <img src="assets/logo-gamki.png" alt="Logo Pelatihan UMKM" class="navbar-brand-logo me-2">
-                <span style="font-weight:700; letter-spacing:0.5px;">GAMKI SUMUT 2026</span>
+                <span class="navbar-brand-text" style="font-weight:700; letter-spacing:0.3px;">Pelatihan UMKM GAMKI SUMUT 2026</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
