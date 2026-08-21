@@ -1493,15 +1493,21 @@
             if (!enforceAdmin()) return;
             showLoader("Memuat Data Registrasi...");
             try {
-                const res = await apiCall('GET', 'getRegistrasi');
-                currentRegistrasiData = res.data;
+                // Fetch registrasi & peserta secara paralel agar pencarian live 4-digit ID selalu siap
+                const [resReg, resPes] = await Promise.all([
+                    apiCall('GET', 'getRegistrasi'),
+                    apiCall('GET', 'getPeserta')
+                ]);
+                currentRegistrasiData = resReg.data;
+                if (resPes && resPes.data) currentPesertaData = resPes.data;
+
                 const tbody = document.getElementById('tbody-registrasi');
                 tbody.innerHTML = '';
 
-                if (res.data.length === 0) {
+                if (resReg.data.length === 0) {
                     tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted">Belum ada peserta yang melakukan registrasi kehadiran.</td></tr>`;
                 } else {
-                    res.data.forEach(item => {
+                    resReg.data.forEach(item => {
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
                             <td><span class="badge bg-primary">${item.id_registrasi}</span></td>
@@ -1527,6 +1533,19 @@
             if (!query || query.length < 2) {
                 previewEl.classList.add('d-none');
                 previewEl.innerHTML = '';
+                return;
+            }
+
+            // Jika cache peserta masih kosong, auto-fetch dari server secara instan
+            if (!currentPesertaData || currentPesertaData.length === 0) {
+                previewEl.innerHTML = `<small class="text-muted"><i class="fas fa-spinner fa-spin me-1"></i>Memuat daftar peserta resmi...</small>`;
+                previewEl.classList.remove('d-none');
+                apiCall('GET', 'getPeserta').then(res => {
+                    if (res && res.data) {
+                        currentPesertaData = res.data;
+                        handleSearchPesertaLive(val);
+                    }
+                }).catch(() => {});
                 return;
             }
 
