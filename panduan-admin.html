@@ -53,6 +53,45 @@
             border-radius: 50%;
             font-weight: bold;
             margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .header-logo-img {
+            height: 65px;
+            width: auto;
+        }
+
+        @media (max-width: 768px) {
+            .header-banner {
+                padding: 25px 15px;
+            }
+            .header-banner h1 {
+                font-size: 1.4rem !important;
+            }
+            .header-banner h3 {
+                font-size: 1rem !important;
+            }
+            .header-logo-img {
+                height: 48px !important;
+            }
+            .card-guide-header {
+                font-size: 0.95rem !important;
+                padding: 12px 15px;
+            }
+            .card-body {
+                padding: 16px !important;
+            }
+            .step-number {
+                width: 28px;
+                height: 28px;
+                font-size: 0.85rem;
+                margin-right: 8px;
+            }
+            .btn-print-mobile {
+                width: 100%;
+                font-size: 0.85rem;
+                padding: 8px 16px !important;
+            }
         }
 
         @media print {
@@ -77,13 +116,13 @@
 
     <!-- CONTROL BAR (NO PRINT) -->
     <div class="bg-dark text-white py-3 no-print sticky-top shadow">
-        <div class="container d-flex justify-content-between align-items-center">
-            <div>
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+            <div class="text-center text-md-start">
                 <i class="fas fa-book-open text-warning me-2"></i>
-                <strong>Buku Panduan Operasional Admin Portal GAMKI SUMUT 2026</strong>
+                <strong class="small">Buku Panduan Operasional Admin Portal GAMKI SUMUT 2026</strong>
             </div>
-            <div>
-                <button onclick="window.print()" class="btn btn-warning fw-bold px-4 rounded-pill">
+            <div class="w-100 w-md-auto text-center">
+                <button onclick="window.print()" class="btn btn-warning fw-bold px-4 rounded-pill btn-print-mobile">
                     <i class="fas fa-print me-2"></i> Cetak / Simpan sebagai PDF
                 </button>
             </div>
@@ -91,11 +130,11 @@
     </div>
 
     <!-- HEADER BANNER -->
-    <header class="header-banner text-center mb-5">
+    <header class="header-banner text-center mb-4 mb-md-5">
         <div class="container">
             <div class="d-flex justify-content-center align-items-center gap-3 mb-3">
-                <img src="assets/logo-bank-sumut.png" alt="Logo GAMKI" style="height: 65px;">
-                <img src="assets/logo-gamki.png" alt="Logo UMKM 2026" style="height: 65px;">
+                <img src="assets/logo-bank-sumut.png" alt="Logo GAMKI" class="header-logo-img">
+                <img src="assets/logo-gamki.png" alt="Logo UMKM 2026" class="header-logo-img">
             </div>
             <h1 class="fw-extrabold display-5 mb-1">BUKU PANDUAN OPERASIONAL ADMIN</h1>
             <h3 class="text-warning fw-semibold fs-4">Portal Pendaftaran Pelatihan UMKM GAMKI Sumatera Utara 2026</h3>
