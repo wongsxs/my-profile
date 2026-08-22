@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buku Panduan Operasional Admin - GAMKI SUMUT 2026</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Font -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #1e293b;
+            background-color: #f8fafc;
+            line-height: 1.6;
+        }
+
+        .header-banner {
+            background-color: #0f2b5c;
+            color: #ffffff;
+            padding: 40px 0;
+            border-bottom: 5px solid #d97706;
+        }
+
+        .card-guide {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            margin-bottom: 25px;
+            background: #ffffff;
+            overflow: hidden;
+        }
+
+        .card-guide-header {
+            background-color: #f1f5f9;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 15px 20px;
+            font-weight: 700;
+            color: #0f2b5c;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background-color: #0f2b5c;
+            color: #ffffff;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background-color: #ffffff;
+            }
+            .header-banner {
+                padding: 20px 0;
+            }
+            .card-guide {
+                box-shadow: none;
+                border: 1px solid #cbd5e1;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CONTROL BAR (NO PRINT) -->
+    <div class="bg-dark text-white py-3 no-print sticky-top shadow">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div>
+                <i class="fas fa-book-open text-warning me-2"></i>
+                <strong>Buku Panduan Operasional Admin Portal GAMKI SUMUT 2026</strong>
+            </div>
+            <div>
+                <button onclick="window.print()" class="btn btn-warning fw-bold px-4 rounded-pill">
+                    <i class="fas fa-print me-2"></i> Cetak / Simpan sebagai PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HEADER BANNER -->
+    <header class="header-banner text-center mb-5">
+        <div class="container">
+            <div class="d-flex justify-content-center align-items-center gap-3 mb-3">
+                <img src="assets/logo-bank-sumut.png" alt="Logo GAMKI" style="height: 65px;">
+                <img src="assets/logo-gamki.png" alt="Logo UMKM 2026" style="height: 65px;">
+            </div>
+            <h1 class="fw-extrabold display-5 mb-1">BUKU PANDUAN OPERASIONAL ADMIN</h1>
+            <h3 class="text-warning fw-semibold fs-4">Portal Pendaftaran Pelatihan UMKM GAMKI Sumatera Utara 2026</h3>
+            <p class="mb-0 text-white-50 small mt-2">Dokumen Resmi Petunjuk Kerja Panitia & Pengelola Database</p>
+        </div>
+    </header>
+
+    <!-- CONTENT CONTAINER -->
+    <main class="container mb-5">
+        
+        <!-- SECTION 1: AKSES & KREDENSIAL -->
+        <div class="card-guide">
+            <div class="card-guide-header d-flex align-items-center fs-5">
+                <span class="step-number">1</span> Akses Masuk Admin & Pengaturan Kredensial
+            </div>
+            <div class="card-body p-4">
+                <p>Untuk masuk ke panel pengelolaan data admin, silakan ikuti petunjuk berikut:</p>
+                <ul>
+                    <li><strong>URL Portal Resmi</strong>: <a href="https://gamkisumut.my.id" target="_blank" class="fw-bold text-primary">https://gamkisumut.my.id</a></li>
+                    <li><strong>Menu Akses</strong>: Klik menu <strong>"Login Admin"</strong> di pojok kanan atas navigasi website.</li>
+                </ul>
+
+                <div class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded bg-light">
+                            <h6 class="fw-bold text-primary mb-2"><i class="fas fa-key me-2"></i>Kredensial Default Login:</h6>
+                            <p class="mb-1">Username: <code>admin</code></p>
+                            <p class="mb-0">Password: <code>gamki2026</code></p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded bg-light">
+                            <h6 class="fw-bold text-primary mb-2"><i class="fas fa-edit me-2"></i>Cara Mengubah Username & Password:</h6>
+                            <ol class="ps-3 mb-0 small">
+                                <li>Buka Google Sheets Database Panitia.</li>
+                                <li>Pilih tab <strong>"Admin"</strong> di bagian bawah.</li>
+                                <li>Ganti Username di <strong>Kolom A Row 2</strong> dan Password di <strong>Kolom B Row 2</strong>.</li>
+                                <li>Perubahan langsung aktif secara <em>real-time</em>!</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: DASHBOARD & GLOBAL CLOUD CONTROLLER -->
+        <div class="card-guide">
+            <div class="card-guide-header d-flex align-items-center fs-5">
+                <span class="step-number">2</span> Modul Dashboard Utama & Control Cloud Server
+            </div>
+            <div class="card-body p-4">
+                <p>Halaman Dashboard (<code>/dashboard</code>) memuat 3 indikator statistik utama & panel kontrol status portal:</p>
+                
+                <div class="row g-3 mb-4 text-center">
+                    <div class="col-md-4">
+                        <div class="p-3 border border-warning rounded bg-warning-subtle">
+                            <h3 class="fw-bold text-dark mb-0">Menunggu Verifikasi</h3>
+                            <small class="text-muted">Pendaftar baru yang berkasnya perlu ditinjau</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 border border-success rounded bg-success-subtle">
+                            <h3 class="fw-bold text-success mb-0">Peserta Resmi (ACC)</h3>
+                            <small class="text-muted">Pendaftar yang disetujui & memiliki ID Peserta</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 border border-primary rounded bg-primary-subtle">
+                            <h3 class="fw-bold text-primary mb-0">Hadir Hari H</h3>
+                            <small class="text-muted">Peserta yang telah check-in di lokasi acara</small>
+                        </div>
+                    </div>
+                </div>
+
+                <h6 class="fw-bold text-primary"><i class="fas fa-sliders-h me-2"></i>Pengaturan Portal Global (Cloud Control):</h6>
+                <ul>
+                    <li><strong>Status Pendaftaran</strong>: Ubah ke <code>Buka</code> atau <code>Tutup</code>. Jika ditutup, form pendaftaran di website publik otomatis tersembunyi.</li>
+                    <li><strong>No. WA Helpdesk Panitia</strong>: Nomor WA bantuan yang tampil di tombol kontak publik.</li>
+                    <li><strong>Lokasi Kegiatan</strong>: Mengatur alamat resmi (Default: <code>Bank Sumut Lt. 10, Jl. Imam Bonjol Medan</code>).</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- SECTION 3: VERIFIKASI PENDAFTARAN & EMAIL AUTOMATION -->
+        <div class="card-guide">
+            <div class="card-guide-header d-flex align-items-center fs-5">
+                <span class="step-number">3</span> Modul Verifikasi Berkas & Notifikasi Email Otomatis
+            </div>
+            <div class="card-body p-4">
+                <p>Menu <strong>Verifikasi Pendaftaran</strong> (<code>/admin-pendaftaran</code>) digunakan untuk meninjau berkas UMKM:</p>
+                
+                <ol>
+                    <li class="mb-2"><strong>Pencarian & Filter Data</strong>: Gunakan kata kunci Nama UMKM, Pemilik, atau ID Pendaftaran (<code>REG-2026-XXXX</code>) serta filter bidang usaha.</li>
+                    <li class="mb-2"><strong>Pemeriksaan Berkas HD</strong>: Klik tombol <span class="badge bg-info text-white"><i class="fas fa-eye me-1"></i> Detail</span> untuk melihat perizinan (NIB, NPWP, PIRT, Halal) dan foto produk ukuran jernih HD.</li>
+                    <li class="mb-2">
+                        <strong>Proses Aksi Verifikasi</strong>:
+                        <ul class="mt-1">
+                            <li><strong class="text-success">Tombol Terima (ACC)</strong>: Mengubah status pendaftar menjadi <em>Diterima</em>, menerbitkan <strong>ID Peserta Resmi (<code>PST-2026-XXXX</code>)</strong>, dan mengirimkan <strong>Email Kelulusan Otomatis</strong> via Brevo API ke pendaftar.</li>
+                            <li><strong class="text-danger">Tombol Tolak Pendaftaran</strong>: Mengisi alasan penolakan (misal: <em>Foto produk buram</em>) dan mengirimkan <strong>Email Penolakan Otomatis</strong> berisi petunjuk pendaftaran ulang.</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- SECTION 4: EXPORT EXCEL & REGISTRASI HARI H -->
+        <div class="card-guide">
+            <div class="card-guide-header d-flex align-items-center fs-5">
+                <span class="step-number">4</span> Modul Data Peserta, Export Excel & Check-In Hari H
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <h6 class="fw-bold text-primary"><i class="fas fa-file-excel me-2"></i>Export Data Excel (1-Klik):</h6>
+                        <p class="small text-muted mb-2">Pada menu <strong>Data Peserta</strong> (<code>/admin-peserta</code>):</p>
+                        <ul>
+                            <li>Klik tombol <strong>"Export Data ke Excel"</strong>.</li>
+                            <li>File <code>.xls</code> berformat rapi dengan Header GAMKI Navy Blue memuat 24+ kolom data akan terunduh instan.</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="fw-bold text-primary"><i class="fas fa-user-check me-2"></i>Check-In Kehadiran Hari H (Sub-Second):</h6>
+                        <p class="small text-muted mb-2">Pada menu <strong>Registrasi Hari H</strong> (<code>/admin-registrasi</code>) di lokasi acara pada <strong>Jum'at 25 Sep 2026</strong>:</p>
+                        <ol class="small mb-0">
+                            <li>Ketik <strong>4 digit belakang ID Peserta</strong> (misal <code>0001</code> dari <code>PST-2026-0001</code>).</li>
+                            <li>Preview live peserta akan muncul secara otomatis.</li>
+                            <li>Klik <strong>"Catat Hadir"</strong> (atau tekan ENTER). Kehadiran tercatat instan dengan ID <code>HDR-2026-XXXX</code>!</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 5: INFRASTRUKTUR EMAIL & SPESIFIKASI TEKNIS -->
+        <div class="card-guide">
+            <div class="card-guide-header d-flex align-items-center fs-5">
+                <span class="step-number">5</span> Spesifikasi Teknis Infrastruktur System
+            </div>
+            <div class="card-body p-4">
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Komponen System</th>
+                                <th>Teknologi & Spesifikasi</th>
+                                <th>Kapasitas & Batas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Dual-Engine Email</strong></td>
+                                <td>Brevo REST API + Google MailApp Fallback</td>
+                                <td><span class="badge bg-success">400 Email / Hari Gratis</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Database & Storage</strong></td>
+                                <td>Private Google Sheets + Google Drive Storage</td>
+                                <td><span class="badge bg-primary">Garansi ID Unik 100% Bebas Bentrok</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Server Web Hosting</strong></td>
+                                <td>Vercel CDN Edge Network (Static SSL)</td>
+                                <td><span class="badge bg-info text-white">0 Bytes Beban Bandwidth (Client Compress)</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER PRINT -->
+    <footer class="text-center py-4 border-top text-muted small">
+        <p class="mb-0">&copy; 2026 DPD GAMKI Sumatera Utara. Hak Cipta Dilindungi.</p>
+        <p class="mb-0">Dokumen Panduan Operasional Panitia Pelatihan UMKM GAMKI SUMUT 2026.</p>
+    </footer>
+
+</body>
+</html>
